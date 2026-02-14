@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		07A416C6FCC671083FC30391 /* SchedulockApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BDC31A316E15E64C2939A68 /* SchedulockApp.swift */; };
+		12A2C5D85BEB5491FC94A513 /* CalendarPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6FFA835C88D89728800FA02 /* CalendarPickerView.swift */; };
 		166FC7882434F39E6B1800D6 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A02BF5B67DA18FFEFBCC6B22 /* Assets.xcassets */; };
 		1B292AF58EAF7D8DCD77290A /* TemplateGalleryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8940527D1C3268DC701AD16 /* TemplateGalleryView.swift */; };
 		291F6472ACEE792A7FA6C18C /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAA40D70AD5719EDCEC2CB88 /* ContentView.swift */; };
@@ -16,6 +17,7 @@
 		45472FEFC6EA590367F3965C /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 908874C133EA216AFC4E6B1D /* HomeView.swift */; };
 		4FFE4A278CDC422C174FDE35 /* HistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DABD2D24120D5FDBB0A575D9 /* HistoryView.swift */; };
 		63B720926DD35D09A7C2BF48 /* Shared in Frameworks */ = {isa = PBXBuildFile; productRef = C54E718DC75F946F43365D98 /* Shared */; };
+		7215710D182A0CBCC89540AB /* CalendarViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E4C1F5E90D26F9536134FD4 /* CalendarViewModel.swift */; };
 		78CF58FC54B2446E99DFCE79 /* SchedulockWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B965BF24401F3816EC4716 /* SchedulockWidget.swift */; };
 		A2697086E3471AEF0B96385D /* Shared in Frameworks */ = {isa = PBXBuildFile; productRef = 920F6D55C448F9EEF78A4938 /* Shared */; };
 		AF8AA92CCFB653D1B6009DE9 /* Shared in Frameworks */ = {isa = PBXBuildFile; productRef = 9BF159661DF69BADE63871B8 /* Shared */; };
@@ -36,6 +38,7 @@
 
 /* Begin PBXFileReference section */
 		191192C266C7D6833F6FE133 /* AppIntents.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = AppIntents.framework; sourceTree = "<group>"; };
+		1E4C1F5E90D26F9536134FD4 /* CalendarViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarViewModel.swift; sourceTree = "<group>"; };
 		2B5C09491F6DB11D5B8B3493 /* Shared */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Shared; path = Shared; sourceTree = SOURCE_ROOT; };
 		44F9FA6715A9036E859B23E3 /* SchedulockTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SchedulockTests.swift; sourceTree = "<group>"; };
 		5BDC31A316E15E64C2939A68 /* SchedulockApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SchedulockApp.swift; sourceTree = "<group>"; };
@@ -49,6 +52,7 @@
 		A53EC1C9D502DA2D48A38F3E /* SchedulockIntentExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SchedulockIntentExtension.entitlements; sourceTree = "<group>"; };
 		C6B965BF24401F3816EC4716 /* SchedulockWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SchedulockWidget.swift; sourceTree = "<group>"; };
 		CA14AFD45D7A946337CC7B69 /* SchedulockWidgetExtension.appex */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = "wrapper.app-extension"; path = SchedulockWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		D6FFA835C88D89728800FA02 /* CalendarPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarPickerView.swift; sourceTree = "<group>"; };
 		DABD2D24120D5FDBB0A575D9 /* HistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryView.swift; sourceTree = "<group>"; };
 		E3B36EED60034B1C5E0F793B /* SchedulockWidgetExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SchedulockWidgetExtension.entitlements; sourceTree = "<group>"; };
 		E6476ED3FF2153A18D94B7B1 /* Schedulock.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Schedulock.entitlements; sourceTree = "<group>"; };
@@ -134,6 +138,7 @@
 		63654F59E1D3C517607BFE4D /* ViewModels */ = {
 			isa = PBXGroup;
 			children = (
+				1E4C1F5E90D26F9536134FD4 /* CalendarViewModel.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -190,6 +195,7 @@
 		F386DF49B7B0C5573BF8A26A /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				D6FFA835C88D89728800FA02 /* CalendarPickerView.swift */,
 				EAA40D70AD5719EDCEC2CB88 /* ContentView.swift */,
 				DABD2D24120D5FDBB0A575D9 /* HistoryView.swift */,
 				908874C133EA216AFC4E6B1D /* HomeView.swift */,
@@ -338,6 +344,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				12A2C5D85BEB5491FC94A513 /* CalendarPickerView.swift in Sources */,
+				7215710D182A0CBCC89540AB /* CalendarViewModel.swift in Sources */,
 				291F6472ACEE792A7FA6C18C /* ContentView.swift in Sources */,
 				4FFE4A278CDC422C174FDE35 /* HistoryView.swift in Sources */,
 				45472FEFC6EA590367F3965C /* HomeView.swift in Sources */,
