@@ -27,7 +27,6 @@
 		A0CA64A089CA4D426A743738 /* WallpaperViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAD8428EE19B6F2C7BD768AA /* WallpaperViewModel.swift */; };
 		A2697086E3471AEF0B96385D /* Shared in Frameworks */ = {isa = PBXBuildFile; productRef = 920F6D55C448F9EEF78A4938 /* Shared */; };
 		A6652D2AF6FDDF25058F0743 /* TemplateEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE54ED76B98FC2BCE36AB657 /* TemplateEditorView.swift */; };
-		A977D1117F3D53F8AA486672 /* SchedulockIntentExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 5F56D17D719B8A201B600614 /* SchedulockIntentExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		AAE63E9AD2BF2DE27A74A20E /* SnapshotTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56F951B6A85C4E550EFBC362 /* SnapshotTests.swift */; };
 		AF8AA92CCFB653D1B6009DE9 /* Shared in Frameworks */ = {isa = PBXBuildFile; productRef = 9BF159661DF69BADE63871B8 /* Shared */; };
 		B597D634810D4B1343FA681F /* SchedulockTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44F9FA6715A9036E859B23E3 /* SchedulockTests.swift */; };
@@ -47,13 +46,6 @@
 			remoteGlobalIDString = CB2995F51F238FACA21E27C6;
 			remoteInfo = SchedulockWidgetExtension;
 		};
-		2152DE51C99C217DDCE59B74 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 3AD814E86AF8A2D01CEEF5E7 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 578A6F97C88627F252C26F7A;
-			remoteInfo = SchedulockIntentExtension;
-		};
 		ED89603948648E4FBB4349F4 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 3AD814E86AF8A2D01CEEF5E7 /* Project object */;
@@ -71,7 +63,6 @@
 			dstSubfolderSpec = 13;
 			files = (
 				333992983770D9080337634B /* SchedulockWidgetExtension.appex in Embed Foundation Extensions */,
-				A977D1117F3D53F8AA486672 /* SchedulockIntentExtension.appex in Embed Foundation Extensions */,
 			);
 			name = "Embed Foundation Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -310,7 +301,6 @@
 			);
 			dependencies = (
 				BF6E92F3516B773CE6068FDD /* PBXTargetDependency */,
-				6934C0450575C9B50BA03972 /* PBXTargetDependency */,
 			);
 			name = Schedulock;
 			packageProductDependencies = (
@@ -462,11 +452,6 @@
 			isa = PBXTargetDependency;
 			target = 96BE87A2DD1F56F66338AFB3 /* Schedulock */;
 			targetProxy = ED89603948648E4FBB4349F4 /* PBXContainerItemProxy */;
-		};
-		6934C0450575C9B50BA03972 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 578A6F97C88627F252C26F7A /* SchedulockIntentExtension */;
-			targetProxy = 2152DE51C99C217DDCE59B74 /* PBXContainerItemProxy */;
 		};
 		BF6E92F3516B773CE6068FDD /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;

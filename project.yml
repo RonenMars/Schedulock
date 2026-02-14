@@ -23,7 +23,6 @@ targets:
     dependencies:
       - package: Shared
       - target: SchedulockWidgetExtension
-      - target: SchedulockIntentExtension
     settings:
       base:
         INFOPLIST_FILE: App/Info.plist
@@ -92,7 +91,6 @@ schemes:
       targets:
         Schedulock: all
         SchedulockWidgetExtension: all
-        SchedulockIntentExtension: all
         SchedulockTests: [test]
     run:
       config: Debug
