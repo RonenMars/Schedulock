@@ -70,7 +70,7 @@ targets:
         embed: false
     settings:
       base:
-        GENERATE_INFOPLIST_FILE: YES
+        INFOPLIST_FILE: IntentExtension/Info.plist
         SWIFT_VERSION: "5.9"
         CODE_SIGN_ENTITLEMENTS: IntentExtension/SchedulockIntentExtension.entitlements
         PRODUCT_BUNDLE_IDENTIFIER: com.ronenmars.Schedulock.IntentExtension

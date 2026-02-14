@@ -83,6 +83,7 @@
 		1E4C1F5E90D26F9536134FD4 /* CalendarViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarViewModel.swift; sourceTree = "<group>"; };
 		2B5C09491F6DB11D5B8B3493 /* Shared */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Shared; path = Shared; sourceTree = SOURCE_ROOT; };
 		341270D3A83C66D71AED4EC8 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		3A260C949C82DD1ED6D4652C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		44F9FA6715A9036E859B23E3 /* SchedulockTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SchedulockTests.swift; sourceTree = "<group>"; };
 		45BB0E10CA5AC7219CB4D338 /* UtilityTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UtilityTests.swift; sourceTree = "<group>"; };
 		4FB564B0A6F82B9FF8CB88E8 /* EdgeCaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EdgeCaseTests.swift; sourceTree = "<group>"; };
@@ -250,6 +251,7 @@
 			isa = PBXGroup;
 			children = (
 				91A1F7FC465028321068C435 /* GenerateWallpaperIntent.swift */,
+				3A260C949C82DD1ED6D4652C /* Info.plist */,
 				A53EC1C9D502DA2D48A38F3E /* SchedulockIntentExtension.entitlements */,
 			);
 			path = IntentExtension;
@@ -622,7 +624,7 @@
 					"$(inherited)",
 					"\".\"",
 				);
-				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = IntentExtension/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -718,7 +720,7 @@
 					"$(inherited)",
 					"\".\"",
 				);
-				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = IntentExtension/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
