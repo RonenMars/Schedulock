@@ -24,9 +24,11 @@ struct TemplateGalleryView: View {
                                 preview: viewModel.generatePreview(
                                     templateType: template,
                                     settings: .default
-                                )
+                                ),
+                                isSelected: selectedTemplate == template
                             )
                             .onTapGesture {
+                                lightHaptic()
                                 selectedTemplate = template
                             }
                         }
@@ -44,11 +46,19 @@ struct TemplateGalleryView: View {
             }
         }
     }
+
+    // MARK: - Helpers
+
+    private func lightHaptic() {
+        UIImpactFeedbackGenerator(style: .light).impactOccurred()
+    }
 }
 
 private struct TemplateCard: View {
     let template: TemplateType
     let preview: UIImage?
+    let isSelected: Bool
+    @State private var isPressed = false
 
     var body: some View {
         VStack(spacing: DesignTokens.spacingSM) {
@@ -71,5 +81,10 @@ private struct TemplateCard: View {
                 .font(.caption.bold())
                 .foregroundStyle(DesignTokens.textPrimary)
         }
+        .scaleEffect(isPressed ? 0.95 : 1.0)
+        .animation(.spring(duration: 0.3), value: isSelected)
+        .onLongPressGesture(minimumDuration: .infinity, maximumDistance: .infinity, pressing: { pressing in
+            isPressed = pressing
+        }, perform: {})
     }
 }

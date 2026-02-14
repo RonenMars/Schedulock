@@ -42,6 +42,8 @@ struct TemplateEditorView: View {
                     .aspectRatio(9/19.5, contentMode: .fit)
                     .clipShape(RoundedRectangle(cornerRadius: DesignTokens.phoneFrameRadius))
                     .shadow(color: DesignTokens.primary.opacity(0.2), radius: 20)
+                    .transition(.opacity)
+                    .id(preview)
             } else {
                 RoundedRectangle(cornerRadius: DesignTokens.phoneFrameRadius)
                     .fill(DesignTokens.surface)
@@ -140,10 +142,12 @@ struct TemplateEditorView: View {
     // MARK: - Helpers
 
     private func refreshPreview() {
-        preview = viewModel.generatePreview(
-            templateType: templateType,
-            settings: settings
-        )
+        withAnimation(.easeInOut(duration: 0.3)) {
+            preview = viewModel.generatePreview(
+                templateType: templateType,
+                settings: settings
+            )
+        }
     }
 }
 
@@ -205,7 +209,14 @@ private struct SliderRow: View {
             }
             Slider(value: $value, in: range)
                 .tint(DesignTokens.primary)
+                .onChange(of: value) { _, _ in
+                    lightHaptic()
+                }
         }
+    }
+
+    private func lightHaptic() {
+        UIImpactFeedbackGenerator(style: .light).impactOccurred()
     }
 }
 
