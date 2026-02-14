@@ -19,8 +19,11 @@ targets:
       - path: App
     resources:
       - path: App/Resources
+      - path: App/PrivacyInfo.xcprivacy
     dependencies:
       - package: Shared
+      - target: SchedulockWidgetExtension
+      - target: SchedulockIntentExtension
     settings:
       base:
         INFOPLIST_FILE: App/Info.plist

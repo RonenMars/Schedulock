@@ -473,8 +473,8 @@ final class UtilityTests: XCTestCase {
     }
 
     func testAdjustBrightnessOfColor() {
-        // Given: A color
-        let color = UIColor.blue
+        // Given: A gray color (which will change brightness predictably)
+        let color = UIColor.gray
 
         // When: Adjusting brightness
         let brighter = ColorUtils.adjustBrightness(of: color, by: 0.3)
@@ -483,8 +483,18 @@ final class UtilityTests: XCTestCase {
         // Then: Should return non-nil colors
         XCTAssertNotNil(brighter)
         XCTAssertNotNil(darker)
-        XCTAssertNotEqual(brighter, color)
-        XCTAssertNotEqual(darker, color)
+
+        // Verify brightness actually changed by checking the values
+        var brightnessOriginal: CGFloat = 0
+        var brightnessBrighter: CGFloat = 0
+        var brightnessDarker: CGFloat = 0
+
+        color.getHue(nil, saturation: nil, brightness: &brightnessOriginal, alpha: nil)
+        brighter.getHue(nil, saturation: nil, brightness: &brightnessBrighter, alpha: nil)
+        darker.getHue(nil, saturation: nil, brightness: &brightnessDarker, alpha: nil)
+
+        XCTAssertGreaterThan(brightnessBrighter, brightnessOriginal)
+        XCTAssertLessThan(brightnessDarker, brightnessOriginal)
     }
 
     func testAdjustBrightnessClamps() {

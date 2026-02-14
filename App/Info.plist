@@ -26,5 +26,7 @@
 	<array>
 		<string>com.ronenmars.Schedulock.wallpaper-generation</string>
 	</array>
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
 </dict>
 </plist>

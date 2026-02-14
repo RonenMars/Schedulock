@@ -13,6 +13,7 @@
 		1B292AF58EAF7D8DCD77290A /* TemplateGalleryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8940527D1C3268DC701AD16 /* TemplateGalleryView.swift */; };
 		291F6472ACEE792A7FA6C18C /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAA40D70AD5719EDCEC2CB88 /* ContentView.swift */; };
 		2FCFDD0288866FD352B87BDE /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73F091FB768E5A00DB99065D /* SettingsView.swift */; };
+		333992983770D9080337634B /* SchedulockWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = CA14AFD45D7A946337CC7B69 /* SchedulockWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		3B625F8DA2515A17BD9D8AAA /* GenerateWallpaperIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91A1F7FC465028321068C435 /* GenerateWallpaperIntent.swift */; };
 		418A48874C28134E8DB5F094 /* UtilityTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45BB0E10CA5AC7219CB4D338 /* UtilityTests.swift */; };
 		45472FEFC6EA590367F3965C /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 908874C133EA216AFC4E6B1D /* HomeView.swift */; };
@@ -26,9 +27,11 @@
 		A0CA64A089CA4D426A743738 /* WallpaperViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAD8428EE19B6F2C7BD768AA /* WallpaperViewModel.swift */; };
 		A2697086E3471AEF0B96385D /* Shared in Frameworks */ = {isa = PBXBuildFile; productRef = 920F6D55C448F9EEF78A4938 /* Shared */; };
 		A6652D2AF6FDDF25058F0743 /* TemplateEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE54ED76B98FC2BCE36AB657 /* TemplateEditorView.swift */; };
+		A977D1117F3D53F8AA486672 /* SchedulockIntentExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 5F56D17D719B8A201B600614 /* SchedulockIntentExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		AAE63E9AD2BF2DE27A74A20E /* SnapshotTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56F951B6A85C4E550EFBC362 /* SnapshotTests.swift */; };
 		AF8AA92CCFB653D1B6009DE9 /* Shared in Frameworks */ = {isa = PBXBuildFile; productRef = 9BF159661DF69BADE63871B8 /* Shared */; };
 		B597D634810D4B1343FA681F /* SchedulockTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44F9FA6715A9036E859B23E3 /* SchedulockTests.swift */; };
+		B95294AAA16F8BDC991465FE /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 341270D3A83C66D71AED4EC8 /* PrivacyInfo.xcprivacy */; };
 		D9A49373BCF18D5E543A6089 /* AppIntents.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 191192C266C7D6833F6FE133 /* AppIntents.framework */; };
 		DA3A4D66EA66B6D3C2B355FE /* BackgroundTaskManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6EE03837F0215C408288A54 /* BackgroundTaskManager.swift */; };
 		E1B40020CA8A9D6489F2D587 /* ShortcutsGuideView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97E0DEBCC518F4F3656B3C2E /* ShortcutsGuideView.swift */; };
@@ -37,6 +40,20 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		035B094D55B1AA088BDF3A02 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 3AD814E86AF8A2D01CEEF5E7 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = CB2995F51F238FACA21E27C6;
+			remoteInfo = SchedulockWidgetExtension;
+		};
+		2152DE51C99C217DDCE59B74 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 3AD814E86AF8A2D01CEEF5E7 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 578A6F97C88627F252C26F7A;
+			remoteInfo = SchedulockIntentExtension;
+		};
 		ED89603948648E4FBB4349F4 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 3AD814E86AF8A2D01CEEF5E7 /* Project object */;
@@ -46,10 +63,26 @@
 		};
 /* End PBXContainerItemProxy section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		753A9A13FE2A3988AB410779 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				333992983770D9080337634B /* SchedulockWidgetExtension.appex in Embed Foundation Extensions */,
+				A977D1117F3D53F8AA486672 /* SchedulockIntentExtension.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
 		191192C266C7D6833F6FE133 /* AppIntents.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = AppIntents.framework; sourceTree = "<group>"; };
 		1E4C1F5E90D26F9536134FD4 /* CalendarViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarViewModel.swift; sourceTree = "<group>"; };
 		2B5C09491F6DB11D5B8B3493 /* Shared */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Shared; path = Shared; sourceTree = SOURCE_ROOT; };
+		341270D3A83C66D71AED4EC8 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		44F9FA6715A9036E859B23E3 /* SchedulockTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SchedulockTests.swift; sourceTree = "<group>"; };
 		45BB0E10CA5AC7219CB4D338 /* UtilityTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UtilityTests.swift; sourceTree = "<group>"; };
 		4FB564B0A6F82B9FF8CB88E8 /* EdgeCaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EdgeCaseTests.swift; sourceTree = "<group>"; };
@@ -187,6 +220,7 @@
 				F386DF49B7B0C5573BF8A26A /* Views */,
 				F6EE03837F0215C408288A54 /* BackgroundTaskManager.swift */,
 				E4944405FB01941B54DF91D0 /* Info.plist */,
+				341270D3A83C66D71AED4EC8 /* PrivacyInfo.xcprivacy */,
 				E6476ED3FF2153A18D94B7B1 /* Schedulock.entitlements */,
 				5BDC31A316E15E64C2939A68 /* SchedulockApp.swift */,
 			);
@@ -266,10 +300,13 @@
 				51372028EB45F4396FDA122A /* Sources */,
 				E6E66564438584C1AA03098D /* Resources */,
 				09293C67877CE1D21FB050E3 /* Frameworks */,
+				753A9A13FE2A3988AB410779 /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				BF6E92F3516B773CE6068FDD /* PBXTargetDependency */,
+				6934C0450575C9B50BA03972 /* PBXTargetDependency */,
 			);
 			name = Schedulock;
 			packageProductDependencies = (
@@ -358,6 +395,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				166FC7882434F39E6B1800D6 /* Assets.xcassets in Resources */,
+				B95294AAA16F8BDC991465FE /* PrivacyInfo.xcprivacy in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -420,6 +458,16 @@
 			isa = PBXTargetDependency;
 			target = 96BE87A2DD1F56F66338AFB3 /* Schedulock */;
 			targetProxy = ED89603948648E4FBB4349F4 /* PBXContainerItemProxy */;
+		};
+		6934C0450575C9B50BA03972 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 578A6F97C88627F252C26F7A /* SchedulockIntentExtension */;
+			targetProxy = 2152DE51C99C217DDCE59B74 /* PBXContainerItemProxy */;
+		};
+		BF6E92F3516B773CE6068FDD /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = CB2995F51F238FACA21E27C6 /* SchedulockWidgetExtension */;
+			targetProxy = 035B094D55B1AA088BDF3A02 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
