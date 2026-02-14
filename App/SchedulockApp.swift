@@ -7,6 +7,10 @@ struct SchedulockApp: App {
     init() {
         AppGroupManager.ensureDirectoriesExist()
         configureAppearance()
+
+        // Register and schedule background wallpaper generation
+        BackgroundTaskManager.shared.registerTask()
+        BackgroundTaskManager.shared.scheduleNextGeneration()
     }
 
     var body: some Scene {
