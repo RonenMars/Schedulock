@@ -25,6 +25,8 @@
 		AF8AA92CCFB653D1B6009DE9 /* Shared in Frameworks */ = {isa = PBXBuildFile; productRef = 9BF159661DF69BADE63871B8 /* Shared */; };
 		B597D634810D4B1343FA681F /* SchedulockTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44F9FA6715A9036E859B23E3 /* SchedulockTests.swift */; };
 		D9A49373BCF18D5E543A6089 /* AppIntents.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 191192C266C7D6833F6FE133 /* AppIntents.framework */; };
+		DA3A4D66EA66B6D3C2B355FE /* BackgroundTaskManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6EE03837F0215C408288A54 /* BackgroundTaskManager.swift */; };
+		E1B40020CA8A9D6489F2D587 /* ShortcutsGuideView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97E0DEBCC518F4F3656B3C2E /* ShortcutsGuideView.swift */; };
 		E5D68C9131EB8CAB8CBBF574 /* Shared in Frameworks */ = {isa = PBXBuildFile; productRef = 8A143BC475B451D082178AA3 /* Shared */; };
 /* End PBXBuildFile section */
 
@@ -50,6 +52,7 @@
 		83A49130BA2E5DE22F811407 /* Schedulock.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Schedulock.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		908874C133EA216AFC4E6B1D /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		91A1F7FC465028321068C435 /* GenerateWallpaperIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenerateWallpaperIntent.swift; sourceTree = "<group>"; };
+		97E0DEBCC518F4F3656B3C2E /* ShortcutsGuideView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShortcutsGuideView.swift; sourceTree = "<group>"; };
 		A02BF5B67DA18FFEFBCC6B22 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		A53EC1C9D502DA2D48A38F3E /* SchedulockIntentExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SchedulockIntentExtension.entitlements; sourceTree = "<group>"; };
 		AAD8428EE19B6F2C7BD768AA /* WallpaperViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WallpaperViewModel.swift; sourceTree = "<group>"; };
@@ -59,8 +62,10 @@
 		DABD2D24120D5FDBB0A575D9 /* HistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryView.swift; sourceTree = "<group>"; };
 		DE54ED76B98FC2BCE36AB657 /* TemplateEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TemplateEditorView.swift; sourceTree = "<group>"; };
 		E3B36EED60034B1C5E0F793B /* SchedulockWidgetExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SchedulockWidgetExtension.entitlements; sourceTree = "<group>"; };
+		E4944405FB01941B54DF91D0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		E6476ED3FF2153A18D94B7B1 /* Schedulock.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Schedulock.entitlements; sourceTree = "<group>"; };
 		EAA40D70AD5719EDCEC2CB88 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		F6EE03837F0215C408288A54 /* BackgroundTaskManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundTaskManager.swift; sourceTree = "<group>"; };
 		F8940527D1C3268DC701AD16 /* TemplateGalleryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TemplateGalleryView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -163,6 +168,8 @@
 				577FC2A70D8DE71803E1E7CC /* Resources */,
 				63654F59E1D3C517607BFE4D /* ViewModels */,
 				F386DF49B7B0C5573BF8A26A /* Views */,
+				F6EE03837F0215C408288A54 /* BackgroundTaskManager.swift */,
+				E4944405FB01941B54DF91D0 /* Info.plist */,
 				E6476ED3FF2153A18D94B7B1 /* Schedulock.entitlements */,
 				5BDC31A316E15E64C2939A68 /* SchedulockApp.swift */,
 			);
@@ -205,6 +212,7 @@
 				DABD2D24120D5FDBB0A575D9 /* HistoryView.swift */,
 				908874C133EA216AFC4E6B1D /* HomeView.swift */,
 				73F091FB768E5A00DB99065D /* SettingsView.swift */,
+				97E0DEBCC518F4F3656B3C2E /* ShortcutsGuideView.swift */,
 				DE54ED76B98FC2BCE36AB657 /* TemplateEditorView.swift */,
 				F8940527D1C3268DC701AD16 /* TemplateGalleryView.swift */,
 			);
@@ -350,6 +358,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DA3A4D66EA66B6D3C2B355FE /* BackgroundTaskManager.swift in Sources */,
 				12A2C5D85BEB5491FC94A513 /* CalendarPickerView.swift in Sources */,
 				7215710D182A0CBCC89540AB /* CalendarViewModel.swift in Sources */,
 				291F6472ACEE792A7FA6C18C /* ContentView.swift in Sources */,
@@ -357,6 +366,7 @@
 				45472FEFC6EA590367F3965C /* HomeView.swift in Sources */,
 				07A416C6FCC671083FC30391 /* SchedulockApp.swift in Sources */,
 				2FCFDD0288866FD352B87BDE /* SettingsView.swift in Sources */,
+				E1B40020CA8A9D6489F2D587 /* ShortcutsGuideView.swift in Sources */,
 				A6652D2AF6FDDF25058F0743 /* TemplateEditorView.swift in Sources */,
 				1B292AF58EAF7D8DCD77290A /* TemplateGalleryView.swift in Sources */,
 				A0CA64A089CA4D426A743738 /* WallpaperViewModel.swift in Sources */,
@@ -512,7 +522,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = App/Schedulock.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = App/Info.plist;
 				INFOPLIST_KEY_NSCalendarsFullAccessUsageDescription = "Full calendar access lets Schedulock read event details like titles and times for your wallpaper.";
 				INFOPLIST_KEY_NSCalendarsUsageDescription = "Schedulock needs access to your calendars to display your agenda on your wallpaper.";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Schedulock uses your photos as wallpaper backgrounds.";
@@ -655,7 +665,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = App/Schedulock.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = App/Info.plist;
 				INFOPLIST_KEY_NSCalendarsFullAccessUsageDescription = "Full calendar access lets Schedulock read event details like titles and times for your wallpaper.";
 				INFOPLIST_KEY_NSCalendarsUsageDescription = "Schedulock needs access to your calendars to display your agenda on your wallpaper.";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Schedulock uses your photos as wallpaper backgrounds.";
