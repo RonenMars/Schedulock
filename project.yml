@@ -1,0 +1,107 @@
+name: Schedulock
+options:
+  bundleIdPrefix: com.ronenmars
+  deploymentTarget:
+    iOS: "17.0"
+  xcodeVersion: "15.0"
+  generateEmptyDirectories: true
+  groupSortPosition: top
+
+packages:
+  Shared:
+    path: Shared
+
+targets:
+  Schedulock:
+    type: application
+    platform: iOS
+    sources:
+      - path: App
+    resources:
+      - path: App/Resources
+    dependencies:
+      - package: Shared
+    settings:
+      base:
+        GENERATE_INFOPLIST_FILE: YES
+        INFOPLIST_KEY_UIApplicationSceneManifest_Generation: YES
+        INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents: YES
+        INFOPLIST_KEY_UILaunchScreen_Generation: YES
+        INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone: UIInterfaceOrientationPortrait
+        INFOPLIST_KEY_NSCalendarsUsageDescription: "Schedulock needs access to your calendars to display your agenda on your wallpaper."
+        INFOPLIST_KEY_NSCalendarsFullAccessUsageDescription: "Full calendar access lets Schedulock read event details like titles and times for your wallpaper."
+        INFOPLIST_KEY_NSPhotoLibraryUsageDescription: "Schedulock uses your photos as wallpaper backgrounds."
+        SWIFT_VERSION: "5.9"
+        CODE_SIGN_ENTITLEMENTS: App/Schedulock.entitlements
+        PRODUCT_BUNDLE_IDENTIFIER: com.ronenmars.Schedulock
+      configs:
+        debug:
+          SWIFT_ACTIVE_COMPILATION_CONDITIONS: DEBUG
+        release:
+          SWIFT_COMPILATION_MODE: wholemodule
+
+  SchedulockWidgetExtension:
+    type: app-extension
+    platform: iOS
+    sources:
+      - path: WidgetExtension
+    dependencies:
+      - package: Shared
+    settings:
+      base:
+        GENERATE_INFOPLIST_FILE: YES
+        INFOPLIST_KEY_CFBundleDisplayName: Schedulock Widget
+        INFOPLIST_KEY_NSExtension_NSExtensionPointIdentifier: com.apple.widgetkit-extension
+        SWIFT_VERSION: "5.9"
+        CODE_SIGN_ENTITLEMENTS: WidgetExtension/SchedulockWidgetExtension.entitlements
+        PRODUCT_BUNDLE_IDENTIFIER: com.ronenmars.Schedulock.WidgetExtension
+
+  SchedulockIntentExtension:
+    type: app-extension
+    platform: iOS
+    sources:
+      - path: IntentExtension
+    dependencies:
+      - package: Shared
+      - framework: AppIntents.framework
+        embed: false
+    settings:
+      base:
+        GENERATE_INFOPLIST_FILE: YES
+        SWIFT_VERSION: "5.9"
+        CODE_SIGN_ENTITLEMENTS: IntentExtension/SchedulockIntentExtension.entitlements
+        PRODUCT_BUNDLE_IDENTIFIER: com.ronenmars.Schedulock.IntentExtension
+
+  SchedulockTests:
+    type: bundle.unit-test
+    platform: iOS
+    sources:
+      - path: Tests/SchedulockTests
+    dependencies:
+      - target: Schedulock
+      - package: Shared
+    settings:
+      base:
+        SWIFT_VERSION: "5.9"
+        PRODUCT_BUNDLE_IDENTIFIER: com.ronenmars.Schedulock.Tests
+
+schemes:
+  Schedulock:
+    build:
+      targets:
+        Schedulock: all
+        SchedulockWidgetExtension: all
+        SchedulockIntentExtension: all
+        SchedulockTests: [test]
+    run:
+      config: Debug
+    test:
+      config: Debug
+      targets:
+        - SchedulockTests
+    profile:
+      config: Release
+    analyze:
+      config: Debug
+    archive:
+      config: Release

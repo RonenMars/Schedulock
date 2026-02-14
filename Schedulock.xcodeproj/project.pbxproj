@@ -1,0 +1,739 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		07A416C6FCC671083FC30391 /* SchedulockApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BDC31A316E15E64C2939A68 /* SchedulockApp.swift */; };
+		166FC7882434F39E6B1800D6 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A02BF5B67DA18FFEFBCC6B22 /* Assets.xcassets */; };
+		1B292AF58EAF7D8DCD77290A /* TemplateGalleryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8940527D1C3268DC701AD16 /* TemplateGalleryView.swift */; };
+		291F6472ACEE792A7FA6C18C /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAA40D70AD5719EDCEC2CB88 /* ContentView.swift */; };
+		2FCFDD0288866FD352B87BDE /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73F091FB768E5A00DB99065D /* SettingsView.swift */; };
+		3B625F8DA2515A17BD9D8AAA /* GenerateWallpaperIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91A1F7FC465028321068C435 /* GenerateWallpaperIntent.swift */; };
+		45472FEFC6EA590367F3965C /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 908874C133EA216AFC4E6B1D /* HomeView.swift */; };
+		4FFE4A278CDC422C174FDE35 /* HistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DABD2D24120D5FDBB0A575D9 /* HistoryView.swift */; };
+		63B720926DD35D09A7C2BF48 /* Shared in Frameworks */ = {isa = PBXBuildFile; productRef = C54E718DC75F946F43365D98 /* Shared */; };
+		78CF58FC54B2446E99DFCE79 /* SchedulockWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B965BF24401F3816EC4716 /* SchedulockWidget.swift */; };
+		A2697086E3471AEF0B96385D /* Shared in Frameworks */ = {isa = PBXBuildFile; productRef = 920F6D55C448F9EEF78A4938 /* Shared */; };
+		AF8AA92CCFB653D1B6009DE9 /* Shared in Frameworks */ = {isa = PBXBuildFile; productRef = 9BF159661DF69BADE63871B8 /* Shared */; };
+		B597D634810D4B1343FA681F /* SchedulockTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44F9FA6715A9036E859B23E3 /* SchedulockTests.swift */; };
+		D9A49373BCF18D5E543A6089 /* AppIntents.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 191192C266C7D6833F6FE133 /* AppIntents.framework */; };
+		E5D68C9131EB8CAB8CBBF574 /* Shared in Frameworks */ = {isa = PBXBuildFile; productRef = 8A143BC475B451D082178AA3 /* Shared */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		ED89603948648E4FBB4349F4 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 3AD814E86AF8A2D01CEEF5E7 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 96BE87A2DD1F56F66338AFB3;
+			remoteInfo = Schedulock;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		191192C266C7D6833F6FE133 /* AppIntents.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = AppIntents.framework; sourceTree = "<group>"; };
+		2B5C09491F6DB11D5B8B3493 /* Shared */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Shared; path = Shared; sourceTree = SOURCE_ROOT; };
+		44F9FA6715A9036E859B23E3 /* SchedulockTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SchedulockTests.swift; sourceTree = "<group>"; };
+		5BDC31A316E15E64C2939A68 /* SchedulockApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SchedulockApp.swift; sourceTree = "<group>"; };
+		5F56D17D719B8A201B600614 /* SchedulockIntentExtension.appex */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = "wrapper.app-extension"; path = SchedulockIntentExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		6674497E498D8A034BAB8C7B /* SchedulockTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = SchedulockTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		73F091FB768E5A00DB99065D /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		83A49130BA2E5DE22F811407 /* Schedulock.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Schedulock.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		908874C133EA216AFC4E6B1D /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
+		91A1F7FC465028321068C435 /* GenerateWallpaperIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenerateWallpaperIntent.swift; sourceTree = "<group>"; };
+		A02BF5B67DA18FFEFBCC6B22 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		A53EC1C9D502DA2D48A38F3E /* SchedulockIntentExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SchedulockIntentExtension.entitlements; sourceTree = "<group>"; };
+		C6B965BF24401F3816EC4716 /* SchedulockWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SchedulockWidget.swift; sourceTree = "<group>"; };
+		CA14AFD45D7A946337CC7B69 /* SchedulockWidgetExtension.appex */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = "wrapper.app-extension"; path = SchedulockWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		DABD2D24120D5FDBB0A575D9 /* HistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryView.swift; sourceTree = "<group>"; };
+		E3B36EED60034B1C5E0F793B /* SchedulockWidgetExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SchedulockWidgetExtension.entitlements; sourceTree = "<group>"; };
+		E6476ED3FF2153A18D94B7B1 /* Schedulock.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Schedulock.entitlements; sourceTree = "<group>"; };
+		EAA40D70AD5719EDCEC2CB88 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		F8940527D1C3268DC701AD16 /* TemplateGalleryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TemplateGalleryView.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		09293C67877CE1D21FB050E3 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				63B720926DD35D09A7C2BF48 /* Shared in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		264D9FF81358717CAF93EB36 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AF8AA92CCFB653D1B6009DE9 /* Shared in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		5984E2DBC087040D9F449D84 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E5D68C9131EB8CAB8CBBF574 /* Shared in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C054ED11C599E6CD26DB958A /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A2697086E3471AEF0B96385D /* Shared in Frameworks */,
+				D9A49373BCF18D5E543A6089 /* AppIntents.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		105F7F704ED4920884C64E1B = {
+			isa = PBXGroup;
+			children = (
+				9320C5272AB2759EFA9ED576 /* App */,
+				EFE9A3106A398BB4B7AF96B7 /* IntentExtension */,
+				B0569CBF7270C196D43819C7 /* Packages */,
+				7230940A45DEF9CEF441F563 /* SchedulockTests */,
+				167CCA273E1ECDD8B6294755 /* WidgetExtension */,
+				158523D302AAA20ED6B689FC /* Frameworks */,
+				DCDCAC00444131ADFA18F07C /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		158523D302AAA20ED6B689FC /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				191192C266C7D6833F6FE133 /* AppIntents.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		167CCA273E1ECDD8B6294755 /* WidgetExtension */ = {
+			isa = PBXGroup;
+			children = (
+				C6B965BF24401F3816EC4716 /* SchedulockWidget.swift */,
+				E3B36EED60034B1C5E0F793B /* SchedulockWidgetExtension.entitlements */,
+			);
+			path = WidgetExtension;
+			sourceTree = "<group>";
+		};
+		577FC2A70D8DE71803E1E7CC /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				A02BF5B67DA18FFEFBCC6B22 /* Assets.xcassets */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		63654F59E1D3C517607BFE4D /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		7230940A45DEF9CEF441F563 /* SchedulockTests */ = {
+			isa = PBXGroup;
+			children = (
+				44F9FA6715A9036E859B23E3 /* SchedulockTests.swift */,
+			);
+			name = SchedulockTests;
+			path = Tests/SchedulockTests;
+			sourceTree = "<group>";
+		};
+		9320C5272AB2759EFA9ED576 /* App */ = {
+			isa = PBXGroup;
+			children = (
+				577FC2A70D8DE71803E1E7CC /* Resources */,
+				63654F59E1D3C517607BFE4D /* ViewModels */,
+				F386DF49B7B0C5573BF8A26A /* Views */,
+				E6476ED3FF2153A18D94B7B1 /* Schedulock.entitlements */,
+				5BDC31A316E15E64C2939A68 /* SchedulockApp.swift */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+		B0569CBF7270C196D43819C7 /* Packages */ = {
+			isa = PBXGroup;
+			children = (
+				2B5C09491F6DB11D5B8B3493 /* Shared */,
+			);
+			name = Packages;
+			sourceTree = "<group>";
+		};
+		DCDCAC00444131ADFA18F07C /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				83A49130BA2E5DE22F811407 /* Schedulock.app */,
+				5F56D17D719B8A201B600614 /* SchedulockIntentExtension.appex */,
+				6674497E498D8A034BAB8C7B /* SchedulockTests.xctest */,
+				CA14AFD45D7A946337CC7B69 /* SchedulockWidgetExtension.appex */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		EFE9A3106A398BB4B7AF96B7 /* IntentExtension */ = {
+			isa = PBXGroup;
+			children = (
+				91A1F7FC465028321068C435 /* GenerateWallpaperIntent.swift */,
+				A53EC1C9D502DA2D48A38F3E /* SchedulockIntentExtension.entitlements */,
+			);
+			path = IntentExtension;
+			sourceTree = "<group>";
+		};
+		F386DF49B7B0C5573BF8A26A /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				EAA40D70AD5719EDCEC2CB88 /* ContentView.swift */,
+				DABD2D24120D5FDBB0A575D9 /* HistoryView.swift */,
+				908874C133EA216AFC4E6B1D /* HomeView.swift */,
+				73F091FB768E5A00DB99065D /* SettingsView.swift */,
+				F8940527D1C3268DC701AD16 /* TemplateGalleryView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		578A6F97C88627F252C26F7A /* SchedulockIntentExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = B6E1236CA9BD665FD56452AB /* Build configuration list for PBXNativeTarget "SchedulockIntentExtension" */;
+			buildPhases = (
+				40417E92AAB2468676E1CCE3 /* Sources */,
+				C054ED11C599E6CD26DB958A /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = SchedulockIntentExtension;
+			packageProductDependencies = (
+				920F6D55C448F9EEF78A4938 /* Shared */,
+			);
+			productName = SchedulockIntentExtension;
+			productReference = 5F56D17D719B8A201B600614 /* SchedulockIntentExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
+		96BE87A2DD1F56F66338AFB3 /* Schedulock */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = B72D0862945C28E668E2B109 /* Build configuration list for PBXNativeTarget "Schedulock" */;
+			buildPhases = (
+				51372028EB45F4396FDA122A /* Sources */,
+				E6E66564438584C1AA03098D /* Resources */,
+				09293C67877CE1D21FB050E3 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Schedulock;
+			packageProductDependencies = (
+				C54E718DC75F946F43365D98 /* Shared */,
+			);
+			productName = Schedulock;
+			productReference = 83A49130BA2E5DE22F811407 /* Schedulock.app */;
+			productType = "com.apple.product-type.application";
+		};
+		AB81115A4D423B3559B79D46 /* SchedulockTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 2260A4AA962BD76E1A5F7C40 /* Build configuration list for PBXNativeTarget "SchedulockTests" */;
+			buildPhases = (
+				7CC0526389226514C93C7A57 /* Sources */,
+				5984E2DBC087040D9F449D84 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				3BB2495663F5A35FD4636701 /* PBXTargetDependency */,
+			);
+			name = SchedulockTests;
+			packageProductDependencies = (
+				8A143BC475B451D082178AA3 /* Shared */,
+			);
+			productName = SchedulockTests;
+			productReference = 6674497E498D8A034BAB8C7B /* SchedulockTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		CB2995F51F238FACA21E27C6 /* SchedulockWidgetExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 0512D9EA9748B4D845299F0A /* Build configuration list for PBXNativeTarget "SchedulockWidgetExtension" */;
+			buildPhases = (
+				9362B5B52B5798BCD1E25752 /* Sources */,
+				264D9FF81358717CAF93EB36 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = SchedulockWidgetExtension;
+			packageProductDependencies = (
+				9BF159661DF69BADE63871B8 /* Shared */,
+			);
+			productName = SchedulockWidgetExtension;
+			productReference = CA14AFD45D7A946337CC7B69 /* SchedulockWidgetExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		3AD814E86AF8A2D01CEEF5E7 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1500;
+			};
+			buildConfigurationList = 9A1535C958670B3B296B4CC7 /* Build configuration list for PBXProject "Schedulock" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = 105F7F704ED4920884C64E1B;
+			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				4FA04B06B976F447A4AD515C /* XCLocalSwiftPackageReference "Shared" */,
+			);
+			preferredProjectObjectVersion = 77;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				96BE87A2DD1F56F66338AFB3 /* Schedulock */,
+				578A6F97C88627F252C26F7A /* SchedulockIntentExtension */,
+				AB81115A4D423B3559B79D46 /* SchedulockTests */,
+				CB2995F51F238FACA21E27C6 /* SchedulockWidgetExtension */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		E6E66564438584C1AA03098D /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				166FC7882434F39E6B1800D6 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		40417E92AAB2468676E1CCE3 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				3B625F8DA2515A17BD9D8AAA /* GenerateWallpaperIntent.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		51372028EB45F4396FDA122A /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				291F6472ACEE792A7FA6C18C /* ContentView.swift in Sources */,
+				4FFE4A278CDC422C174FDE35 /* HistoryView.swift in Sources */,
+				45472FEFC6EA590367F3965C /* HomeView.swift in Sources */,
+				07A416C6FCC671083FC30391 /* SchedulockApp.swift in Sources */,
+				2FCFDD0288866FD352B87BDE /* SettingsView.swift in Sources */,
+				1B292AF58EAF7D8DCD77290A /* TemplateGalleryView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		7CC0526389226514C93C7A57 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B597D634810D4B1343FA681F /* SchedulockTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9362B5B52B5798BCD1E25752 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				78CF58FC54B2446E99DFCE79 /* SchedulockWidget.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		3BB2495663F5A35FD4636701 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 96BE87A2DD1F56F66338AFB3 /* Schedulock */;
+			targetProxy = ED89603948648E4FBB4349F4 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		034617636D433B850394555A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.ronenmars.Schedulock.Tests;
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 5.9;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Schedulock.app/Schedulock";
+			};
+			name = Debug;
+		};
+		78B9C1E986D1F238DC0B2FB5 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.ronenmars.Schedulock.Tests;
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 5.9;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Schedulock.app/Schedulock";
+			};
+			name = Release;
+		};
+		7A089D8C9AE652D6646EE062 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		7D8F6FA6DB0911C68DF6BFEC /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = WidgetExtension/SchedulockWidgetExtension.entitlements;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "Schedulock Widget";
+				INFOPLIST_KEY_NSExtension_NSExtensionPointIdentifier = "com.apple.widgetkit-extension";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.ronenmars.Schedulock.WidgetExtension;
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 5.9;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		889850BF4838904F4A5BD50A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = App/Schedulock.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSCalendarsFullAccessUsageDescription = "Full calendar access lets Schedulock read event details like titles and times for your wallpaper.";
+				INFOPLIST_KEY_NSCalendarsUsageDescription = "Schedulock needs access to your calendars to display your agenda on your wallpaper.";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Schedulock uses your photos as wallpaper backgrounds.";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = UIInterfaceOrientationPortrait;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.ronenmars.Schedulock;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_VERSION = 5.9;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		AA512D4E984CC46932126869 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = IntentExtension/SchedulockIntentExtension.entitlements;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\".\"",
+				);
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.ronenmars.Schedulock.IntentExtension;
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 5.9;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		B52B5C24527E9E2FABCE7EEB /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = WidgetExtension/SchedulockWidgetExtension.entitlements;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "Schedulock Widget";
+				INFOPLIST_KEY_NSExtension_NSExtensionPointIdentifier = "com.apple.widgetkit-extension";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.ronenmars.Schedulock.WidgetExtension;
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 5.9;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		BF79590472FE7A424B6335FE /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		E522D8ACFB515356B6EE6699 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = IntentExtension/SchedulockIntentExtension.entitlements;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\".\"",
+				);
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.ronenmars.Schedulock.IntentExtension;
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 5.9;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		E797DC871A9AA5DDFEB36C1D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = App/Schedulock.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSCalendarsFullAccessUsageDescription = "Full calendar access lets Schedulock read event details like titles and times for your wallpaper.";
+				INFOPLIST_KEY_NSCalendarsUsageDescription = "Schedulock needs access to your calendars to display your agenda on your wallpaper.";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Schedulock uses your photos as wallpaper backgrounds.";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = UIInterfaceOrientationPortrait;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.ronenmars.Schedulock;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_VERSION = 5.9;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		0512D9EA9748B4D845299F0A /* Build configuration list for PBXNativeTarget "SchedulockWidgetExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B52B5C24527E9E2FABCE7EEB /* Debug */,
+				7D8F6FA6DB0911C68DF6BFEC /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		2260A4AA962BD76E1A5F7C40 /* Build configuration list for PBXNativeTarget "SchedulockTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				034617636D433B850394555A /* Debug */,
+				78B9C1E986D1F238DC0B2FB5 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		9A1535C958670B3B296B4CC7 /* Build configuration list for PBXProject "Schedulock" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				7A089D8C9AE652D6646EE062 /* Debug */,
+				BF79590472FE7A424B6335FE /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		B6E1236CA9BD665FD56452AB /* Build configuration list for PBXNativeTarget "SchedulockIntentExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AA512D4E984CC46932126869 /* Debug */,
+				E522D8ACFB515356B6EE6699 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		B72D0862945C28E668E2B109 /* Build configuration list for PBXNativeTarget "Schedulock" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E797DC871A9AA5DDFEB36C1D /* Debug */,
+				889850BF4838904F4A5BD50A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCLocalSwiftPackageReference section */
+		4FA04B06B976F447A4AD515C /* XCLocalSwiftPackageReference "Shared" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = Shared;
+		};
+/* End XCLocalSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		8A143BC475B451D082178AA3 /* Shared */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Shared;
+		};
+		920F6D55C448F9EEF78A4938 /* Shared */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Shared;
+		};
+		9BF159661DF69BADE63871B8 /* Shared */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Shared;
+		};
+		C54E718DC75F946F43365D98 /* Shared */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Shared;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = 3AD814E86AF8A2D01CEEF5E7 /* Project object */;
+}
