@@ -52,9 +52,7 @@ targets:
       - package: Shared
     settings:
       base:
-        GENERATE_INFOPLIST_FILE: YES
-        INFOPLIST_KEY_CFBundleDisplayName: Schedulock Widget
-        INFOPLIST_KEY_NSExtension_NSExtensionPointIdentifier: com.apple.widgetkit-extension
+        INFOPLIST_FILE: WidgetExtension/Info.plist
         SWIFT_VERSION: "5.9"
         CODE_SIGN_ENTITLEMENTS: WidgetExtension/SchedulockWidgetExtension.entitlements
         PRODUCT_BUNDLE_IDENTIFIER: com.ronenmars.Schedulock.WidgetExtension
