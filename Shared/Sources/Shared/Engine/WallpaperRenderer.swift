@@ -9,6 +9,13 @@ public struct DeviceResolution: Sendable {
     public let scale: Int
     public let name: String
 
+    public init(width: Int, height: Int, scale: Int, name: String) {
+        self.width = width
+        self.height = height
+        self.scale = scale
+        self.name = name
+    }
+
     public var size: CGSize {
         CGSize(width: width, height: height)
     }
