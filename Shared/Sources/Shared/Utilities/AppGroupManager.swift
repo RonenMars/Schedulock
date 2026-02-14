@@ -9,7 +9,9 @@ public struct AppGroupManager {
         guard let url = FileManager.default.containerURL(
             forSecurityApplicationGroupIdentifier: groupID
         ) else {
-            fatalError("App Group '\(groupID)' not configured. Check target capabilities.")
+            // Fallback to temporary directory for testing/development
+            print("⚠️ App Group '\(groupID)' not configured. Using temporary directory.")
+            return FileManager.default.temporaryDirectory.appendingPathComponent("SchedulockTest")
         }
         return url
     }
@@ -28,7 +30,9 @@ public struct AppGroupManager {
 
     public static var userDefaults: UserDefaults {
         guard let defaults = UserDefaults(suiteName: groupID) else {
-            fatalError("Cannot create UserDefaults for suite '\(groupID)'.")
+            // Fallback to standard UserDefaults for testing/development
+            print("⚠️ Cannot create UserDefaults for suite '\(groupID)'. Using standard UserDefaults.")
+            return UserDefaults.standard
         }
         return defaults
     }
