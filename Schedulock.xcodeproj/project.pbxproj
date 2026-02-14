@@ -17,6 +17,7 @@
 		45472FEFC6EA590367F3965C /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 908874C133EA216AFC4E6B1D /* HomeView.swift */; };
 		4FFE4A278CDC422C174FDE35 /* HistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DABD2D24120D5FDBB0A575D9 /* HistoryView.swift */; };
 		63B720926DD35D09A7C2BF48 /* Shared in Frameworks */ = {isa = PBXBuildFile; productRef = C54E718DC75F946F43365D98 /* Shared */; };
+		70143AB118250C91FE0A5C83 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F98A7A0333ACDFDAD4856D50 /* OnboardingView.swift */; };
 		7215710D182A0CBCC89540AB /* CalendarViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E4C1F5E90D26F9536134FD4 /* CalendarViewModel.swift */; };
 		78CF58FC54B2446E99DFCE79 /* SchedulockWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B965BF24401F3816EC4716 /* SchedulockWidget.swift */; };
 		A0CA64A089CA4D426A743738 /* WallpaperViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAD8428EE19B6F2C7BD768AA /* WallpaperViewModel.swift */; };
@@ -69,6 +70,7 @@
 		EAA40D70AD5719EDCEC2CB88 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		F6EE03837F0215C408288A54 /* BackgroundTaskManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundTaskManager.swift; sourceTree = "<group>"; };
 		F8940527D1C3268DC701AD16 /* TemplateGalleryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TemplateGalleryView.swift; sourceTree = "<group>"; };
+		F98A7A0333ACDFDAD4856D50 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -214,6 +216,7 @@
 				EAA40D70AD5719EDCEC2CB88 /* ContentView.swift */,
 				DABD2D24120D5FDBB0A575D9 /* HistoryView.swift */,
 				908874C133EA216AFC4E6B1D /* HomeView.swift */,
+				F98A7A0333ACDFDAD4856D50 /* OnboardingView.swift */,
 				73F091FB768E5A00DB99065D /* SettingsView.swift */,
 				97E0DEBCC518F4F3656B3C2E /* ShortcutsGuideView.swift */,
 				DE54ED76B98FC2BCE36AB657 /* TemplateEditorView.swift */,
@@ -367,6 +370,7 @@
 				291F6472ACEE792A7FA6C18C /* ContentView.swift in Sources */,
 				4FFE4A278CDC422C174FDE35 /* HistoryView.swift in Sources */,
 				45472FEFC6EA590367F3965C /* HomeView.swift in Sources */,
+				70143AB118250C91FE0A5C83 /* OnboardingView.swift in Sources */,
 				07A416C6FCC671083FC30391 /* SchedulockApp.swift in Sources */,
 				2FCFDD0288866FD352B87BDE /* SettingsView.swift in Sources */,
 				E1B40020CA8A9D6489F2D587 /* ShortcutsGuideView.swift in Sources */,

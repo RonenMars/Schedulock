@@ -230,16 +230,18 @@ final class RenderingTests: XCTestCase {
 
             XCTAssertNotNil(image, "Should render for \(resolution.name)")
 
-            // Verify image dimensions match resolution (divided by scale)
-            let expectedWidth = CGFloat(resolution.width) / CGFloat(resolution.scale)
-            let expectedHeight = CGFloat(resolution.height) / CGFloat(resolution.scale)
+            if let image = image {
+                // Verify image dimensions match resolution (divided by scale)
+                let expectedWidth = CGFloat(resolution.width) / CGFloat(resolution.scale)
+                let expectedHeight = CGFloat(resolution.height) / CGFloat(resolution.scale)
 
-            XCTAssertEqual(image?.size.width, expectedWidth, accuracy: 0.1,
-                          "Width mismatch for \(resolution.name)")
-            XCTAssertEqual(image?.size.height, expectedHeight, accuracy: 0.1,
-                          "Height mismatch for \(resolution.name)")
-            XCTAssertEqual(image?.scale, CGFloat(resolution.scale),
-                          "Scale mismatch for \(resolution.name)")
+                XCTAssertEqual(image.size.width, expectedWidth, accuracy: 0.1,
+                              "Width mismatch for \(resolution.name)")
+                XCTAssertEqual(image.size.height, expectedHeight, accuracy: 0.1,
+                              "Height mismatch for \(resolution.name)")
+                XCTAssertEqual(image.scale, CGFloat(resolution.scale),
+                              "Scale mismatch for \(resolution.name)")
+            }
         }
     }
 
@@ -253,9 +255,11 @@ final class RenderingTests: XCTestCase {
         )
 
         XCTAssertNotNil(image)
-        XCTAssertEqual(image?.size.width, 750 / 2, accuracy: 0.1) // scale = 2
-        XCTAssertEqual(image?.size.height, 1334 / 2, accuracy: 0.1)
-        XCTAssertEqual(image?.scale, 2.0)
+        if let image = image {
+            XCTAssertEqual(image.size.width, 750 / 2, accuracy: 0.1) // scale = 2
+            XCTAssertEqual(image.size.height, 1334 / 2, accuracy: 0.1)
+            XCTAssertEqual(image.scale, 2.0)
+        }
     }
 
     func testIPhone16ProMaxResolution() {
@@ -268,9 +272,11 @@ final class RenderingTests: XCTestCase {
         )
 
         XCTAssertNotNil(image)
-        XCTAssertEqual(image?.size.width, 1320 / 3, accuracy: 0.1) // scale = 3
-        XCTAssertEqual(image?.size.height, 2868 / 3, accuracy: 0.1)
-        XCTAssertEqual(image?.scale, 3.0)
+        if let image = image {
+            XCTAssertEqual(image.size.width, 1320 / 3, accuracy: 0.1) // scale = 3
+            XCTAssertEqual(image.size.height, 2868 / 3, accuracy: 0.1)
+            XCTAssertEqual(image.scale, 3.0)
+        }
     }
 
     // MARK: - Design Settings Tests

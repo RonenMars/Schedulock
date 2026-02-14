@@ -3,8 +3,22 @@ import Shared
 
 struct ContentView: View {
     @State private var selectedTab = 0
+    @AppStorage("onboardingCompleted", store: AppGroupManager.userDefaults)
+    private var onboardingCompleted = false
 
     var body: some View {
+        if onboardingCompleted {
+            mainTabView
+        } else {
+            NavigationStack {
+                OnboardingView(onComplete: {
+                    onboardingCompleted = true
+                })
+            }
+        }
+    }
+
+    private var mainTabView: some View {
         TabView(selection: $selectedTab) {
             HomeView()
                 .tabItem {

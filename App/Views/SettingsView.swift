@@ -117,7 +117,7 @@ struct SettingsView: View {
 
                     // MARK: Appearance Section
                     Section("Appearance") {
-                        Picker("Default Template", selection: defaultTemplateType) {
+                        Picker("Default Template", selection: defaultTemplateTypeBinding) {
                             ForEach(TemplateType.allCases, id: \.self) { template in
                                 Text(template.displayName).tag(template)
                             }
