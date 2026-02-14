@@ -2,3 +2,7 @@
 *.xcuserdata
 DerivedData/
 *.xcuserstate
+
+# Environment variables
+.envrc
+.env
