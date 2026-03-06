@@ -1,5 +1,7 @@
 import SwiftUI
 import SwiftData
+import Photos
+import UserNotifications
 import Shared
 
 struct SettingsView: View {
@@ -64,9 +66,15 @@ struct SettingsView: View {
                     Section("General") {
                         Toggle("Notifications", isOn: $notificationsEnabled)
                             .foregroundStyle(DesignTokens.textPrimary)
+                            .onChange(of: notificationsEnabled) { _, newValue in
+                                if newValue { requestNotificationPermission() }
+                            }
 
                         Toggle("Save to Photos", isOn: $saveToPhotos)
                             .foregroundStyle(DesignTokens.textPrimary)
+                            .onChange(of: saveToPhotos) { _, newValue in
+                                if newValue { requestPhotoPermission() }
+                            }
                     }
                     .listRowBackground(DesignTokens.surface)
 
@@ -183,6 +191,7 @@ struct SettingsView: View {
             }
             .navigationTitle("Settings")
             .toolbarColorScheme(.dark, for: .navigationBar)
+            .task { await syncPermissionStates() }
             .alert("Clear History", isPresented: $showClearHistoryAlert) {
                 Button("Cancel", role: .cancel) {}
                 Button("Clear", role: .destructive) {
@@ -210,6 +219,47 @@ struct SettingsView: View {
             } message: {
                 Text("This will reset all settings to their default values. This action cannot be undone.")
             }
+        }
+    }
+
+    // MARK: - Permissions
+
+    private func syncPermissionStates() async {
+        // Sync notification status
+        let notifSettings = await UNUserNotificationCenter.current().notificationSettings()
+        notificationsEnabled = notifSettings.authorizationStatus == .authorized
+
+        // Sync photo status
+        let photoStatus = PHPhotoLibrary.authorizationStatus(for: .addOnly)
+        saveToPhotos = photoStatus == .authorized
+    }
+
+    private func requestNotificationPermission() {
+        UNUserNotificationCenter.current().getNotificationSettings { settings in
+            switch settings.authorizationStatus {
+            case .notDetermined:
+                UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound]) { granted, _ in
+                    DispatchQueue.main.async { notificationsEnabled = granted }
+                }
+            case .denied:
+                DispatchQueue.main.async { notificationsEnabled = false }
+            default:
+                break
+            }
+        }
+    }
+
+    private func requestPhotoPermission() {
+        let current = PHPhotoLibrary.authorizationStatus(for: .addOnly)
+        switch current {
+        case .notDetermined:
+            PHPhotoLibrary.requestAuthorization(for: .addOnly) { status in
+                DispatchQueue.main.async { saveToPhotos = status == .authorized }
+            }
+        case .denied, .restricted:
+            DispatchQueue.main.async { saveToPhotos = false }
+        default:
+            break
         }
     }
 

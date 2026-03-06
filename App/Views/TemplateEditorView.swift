@@ -52,13 +52,6 @@ struct TemplateEditorView: View {
         .navigationBarTitleDisplayMode(.inline)
         .toolbarColorScheme(.dark, for: .navigationBar)
         .toolbar {
-            ToolbarItem(placement: .navigationBarLeading) {
-                Button("Apply to All") {
-                    applySettingsToAllTemplates()
-                }
-                .font(.subheadline)
-                .foregroundStyle(DesignTokens.textMuted)
-            }
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button {
                     showFinalPreview = true
@@ -270,14 +263,6 @@ struct TemplateEditorView: View {
             savedRecord = record
             settings = record.asDesignSettings
         }
-    }
-
-    private func applySettingsToAllTemplates() {
-        let all = (try? modelContext.fetch(FetchDescriptor<SavedTemplateSettings>())) ?? []
-        for record in all {
-            record.apply(settings)
-        }
-        try? modelContext.save()
     }
 
     private func approveTemplate() {
