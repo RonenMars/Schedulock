@@ -21,7 +21,8 @@ struct SchedulockApp: App {
         .modelContainer(for: [
             WallpaperTemplate.self,
             CalendarSource.self,
-            GenerationHistory.self
+            GenerationHistory.self,
+            SavedTemplateSettings.self
         ])
     }
 

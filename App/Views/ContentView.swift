@@ -1,10 +1,12 @@
 import SwiftUI
+import SwiftData
 import Shared
 
 struct ContentView: View {
     @State private var selectedTab = 0
     @AppStorage("onboardingCompleted", store: AppGroupManager.userDefaults)
     private var onboardingCompleted = false
+    @Environment(\.modelContext) private var modelContext
 
     var body: some View {
         if onboardingCompleted {
@@ -12,6 +14,7 @@ struct ContentView: View {
         } else {
             NavigationStack {
                 OnboardingView(onComplete: {
+                    selectedTab = 0
                     onboardingCompleted = true
                 })
             }
@@ -45,5 +48,16 @@ struct ContentView: View {
                 .tag(3)
         }
         .tint(DesignTokens.primary)
+        .onAppear { seedTemplateSettingsIfNeeded() }
+    }
+
+    private func seedTemplateSettingsIfNeeded() {
+        let existing = (try? modelContext.fetch(FetchDescriptor<SavedTemplateSettings>()))
+            .map { Set($0.map(\.templateTypeRaw)) } ?? []
+        for type in TemplateType.allCases {
+            guard !existing.contains(type.rawValue) else { continue }
+            modelContext.insert(SavedTemplateSettings(templateTypeRaw: type.rawValue))
+        }
+        try? modelContext.save()
     }
 }
