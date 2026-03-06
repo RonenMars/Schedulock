@@ -7,7 +7,7 @@ import CoreGraphics
 /// - Configurable split ratio (default 0.55)
 /// - Accent top-border on the agenda panel
 /// - Day name + date header
-/// - Events listed with calendar color bars + time + title
+/// - Events listed with calendar color bars + title
 public struct SplitViewRenderer: WallpaperRenderer {
     public let templateType: TemplateType = .split
 
@@ -25,14 +25,14 @@ public struct SplitViewRenderer: WallpaperRenderer {
         let splitY = size.height * settings.splitRatio
 
         // 2. Draw background image in top portion
-        if let bgImage = backgroundImage, let cgImage = bgImage.cgImage {
+        if let bgImage = backgroundImage {
             context.saveGState()
 
             // Clip to top portion
             context.clip(to: CGRect(x: 0, y: 0, width: size.width, height: splitY))
 
             // Draw image (aspect-fill to top portion)
-            let imageAspect = CGFloat(cgImage.width) / CGFloat(cgImage.height)
+            let imageAspect = bgImage.size.width / bgImage.size.height
             let targetAspect = size.width / splitY
 
             let drawRect: CGRect
@@ -44,11 +44,12 @@ public struct SplitViewRenderer: WallpaperRenderer {
             } else {
                 // Image is taller - fit width
                 let drawHeight = size.width / imageAspect
-                let drawY = 0.0 // Anchor to top
-                drawRect = CGRect(x: 0, y: drawY, width: size.width, height: drawHeight)
+                drawRect = CGRect(x: 0, y: 0, width: size.width, height: drawHeight)
             }
 
-            context.draw(cgImage, in: drawRect)
+            UIGraphicsPushContext(context)
+            bgImage.draw(in: drawRect)
+            UIGraphicsPopContext()
             context.restoreGState()
         }
 
@@ -123,7 +124,6 @@ public struct SplitViewRenderer: WallpaperRenderer {
         guard !events.isEmpty else { return }
 
         let eventFont = TextRenderer.font(from: settings.fontFamily, size: 15, weight: .regular)
-        let timeFont = TextRenderer.font(from: settings.fontFamily, size: 14, weight: .medium)
         let eventHeight: CGFloat = 32
         let eventPadding: CGFloat = 4
         let startY = headerY + 60
@@ -131,7 +131,7 @@ public struct SplitViewRenderer: WallpaperRenderer {
         // Calculate available space
         let bottomPadding: CGFloat = 40
         let availableHeight = size.height - startY - bottomPadding
-        let maxEvents = min(events.count, Int(availableHeight / (eventHeight + eventPadding)))
+        let maxEvents = max(0, min(events.count, Int(availableHeight / (eventHeight + eventPadding))))
 
         for (index, event) in events.prefix(maxEvents).enumerated() {
             let eventY = startY + (CGFloat(index) * (eventHeight + eventPadding))
@@ -143,34 +143,11 @@ public struct SplitViewRenderer: WallpaperRenderer {
             context.fill(CGRect(x: 40, y: eventY + 4, width: 4, height: 20))
             context.restoreGState()
 
-            // Format time
-            let timeFormatter = DateFormatter()
-            timeFormatter.dateFormat = event.isAllDay ? "All day" : "h:mm a"
-            let timeString = event.isAllDay ? "All day" : timeFormatter.string(from: event.startTime)
-
-            // Draw time (60pt wide)
-            let timeRect = CGRect(
-                x: 56,
-                y: eventY,
-                width: 70,
-                height: eventHeight
-            )
-
-            TextRenderer.drawText(
-                timeString,
-                in: context,
-                rect: timeRect,
-                font: timeFont,
-                color: ColorUtils.withOpacity(textColor, opacity: 0.7),
-                alignment: .left,
-                shadow: shadow
-            )
-
             // Draw event title
             let titleRect = CGRect(
-                x: 136,
+                x: 56,
                 y: eventY,
-                width: size.width - 176,
+                width: size.width - 96,
                 height: eventHeight
             )
 
