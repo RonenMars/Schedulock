@@ -5,7 +5,7 @@ import SwiftData
 /// One record exists per TemplateType, seeded at first launch.
 @Model
 public final class SavedTemplateSettings {
-    public var templateTypeRaw: String
+    @Attribute(.unique) public var templateTypeRaw: String
 
     // Typography
     public var fontFamilyRaw: String

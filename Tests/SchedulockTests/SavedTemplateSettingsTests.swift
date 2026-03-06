@@ -46,8 +46,8 @@ final class SavedTemplateSettingsTests: XCTestCase {
             fontFamily: .didot, textAlignment: .center, useCalendarColors: false, splitRatio: 0.4
         )
         let record = SavedTemplateSettings(templateTypeRaw: "neon")
-        record.apply(custom)
         container.mainContext.insert(record)
+        record.apply(custom)
 
         let result = record.asDesignSettings
         XCTAssertEqual(result.textColor, "#FF0000")
