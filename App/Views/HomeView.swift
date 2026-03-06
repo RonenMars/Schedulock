@@ -4,6 +4,7 @@ import SwiftData
 import Shared
 
 struct HomeView: View {
+    @Binding var selectedTab: Int
     @State private var currentWallpaper: UIImage?
     @State private var isGlowing = false
     @State private var viewModel = WallpaperViewModel()
@@ -110,31 +111,23 @@ struct HomeView: View {
                             .padding(.horizontal, DesignTokens.spacingLG)
                     }
 
-                    // Generate button with pulsing glow
+                    // Edit Agenda Style button
                     Button {
                         mediumHaptic()
-                        generateWallpaper()
+                        selectedTab = 1
                     } label: {
-                        Group {
-                            if isGenerating {
-                                ProgressView()
-                                    .tint(.white)
-                            } else {
-                                Text("Generate Wallpaper")
-                                    .font(.headline)
-                                    .foregroundStyle(.white)
-                            }
-                        }
-                        .frame(maxWidth: .infinity)
-                        .padding()
-                        .background(DesignTokens.accentGradient)
-                        .clipShape(RoundedRectangle(cornerRadius: DesignTokens.cardRadius))
-                        .shadow(
-                            color: DesignTokens.primary.opacity(isGlowing ? 0.6 : 0.3),
-                            radius: isGlowing ? 20 : 10
-                        )
+                        Text("Edit Agenda Style")
+                            .font(.headline)
+                            .foregroundStyle(.white)
+                            .frame(maxWidth: .infinity)
+                            .padding()
+                            .background(DesignTokens.accentGradient)
+                            .clipShape(RoundedRectangle(cornerRadius: DesignTokens.cardRadius))
+                            .shadow(
+                                color: DesignTokens.primary.opacity(isGlowing ? 0.6 : 0.3),
+                                radius: isGlowing ? 20 : 10
+                            )
                     }
-                    .disabled(isGenerating)
                     .padding(.horizontal, DesignTokens.spacingXL)
                     .padding(.bottom, DesignTokens.spacingXL)
                 }

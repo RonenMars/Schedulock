@@ -68,8 +68,6 @@ public struct GradientBandRenderer: WallpaperRenderer {
         image: UIImage,
         bottomCutoff: CGFloat
     ) {
-        guard let cgImage = image.cgImage else { return }
-
         let availableHeight = size.height - bottomCutoff
         let imageAspect = image.size.width / image.size.height
         let canvasAspect = size.width / availableHeight
@@ -91,7 +89,9 @@ public struct GradientBandRenderer: WallpaperRenderer {
 
         context.saveGState()
         context.clip(to: CGRect(x: 0, y: 0, width: size.width, height: availableHeight))
-        context.draw(cgImage, in: drawRect)
+        UIGraphicsPushContext(context)
+        image.draw(in: drawRect)
+        UIGraphicsPopContext()
         context.restoreGState()
     }
 
@@ -180,7 +180,6 @@ public struct GradientBandRenderer: WallpaperRenderer {
 
         let dotRadius: CGFloat = 5.0
         let dotSpacing: CGFloat = 12.0
-        let timeWidth: CGFloat = size.width * 0.15
 
         // Display up to 5 events
         let displayEvents = Array(events.prefix(5))
@@ -188,31 +187,8 @@ public struct GradientBandRenderer: WallpaperRenderer {
         for (index, event) in displayEvents.enumerated() {
             let y = bandY + bandPadding + (CGFloat(index) * lineHeight)
 
-            // Time formatter
-            let timeFormatter = DateFormatter()
-            timeFormatter.timeStyle = .short
-            let timeString = timeFormatter.string(from: event.startTime)
-
-            // Draw time text
-            let timeRect = CGRect(
-                x: padding,
-                y: y,
-                width: timeWidth,
-                height: lineHeight
-            )
-
-            TextRenderer.drawText(
-                timeString,
-                in: context,
-                rect: timeRect,
-                font: font,
-                color: textColor,
-                alignment: .left,
-                shadow: shadow
-            )
-
             // Draw dot marker
-            let dotX = padding + timeWidth
+            let dotX = padding
             let dotY = y + (lineHeight / 2)
             let dotCenter = CGPoint(x: dotX + dotRadius, y: dotY)
 

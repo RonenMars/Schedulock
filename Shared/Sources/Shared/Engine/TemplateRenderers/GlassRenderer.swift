@@ -24,18 +24,13 @@ public struct GlassRenderer: WallpaperRenderer {
             drawFallbackGradient(context: context, size: size, settings: settings)
         }
 
-        // 2. Draw clock above the card
-        drawClock(context: context, size: size, date: date, settings: settings)
-
-        // 3. Draw glass card with events
+        // 2. Draw glass card with events
         drawGlassCard(context: context, size: size, events: events, settings: settings)
     }
 
     // MARK: - Background Rendering
 
     private func drawBackgroundImage(context: CGContext, size: CGSize, image: UIImage) {
-        guard let cgImage = image.cgImage else { return }
-
         let imageAspect = image.size.width / image.size.height
         let canvasAspect = size.width / size.height
 
@@ -54,7 +49,9 @@ public struct GlassRenderer: WallpaperRenderer {
             drawRect = CGRect(x: 0, y: yOffset, width: drawWidth, height: drawHeight)
         }
 
-        context.draw(cgImage, in: drawRect)
+        UIGraphicsPushContext(context)
+        image.draw(in: drawRect)
+        UIGraphicsPopContext()
     }
 
     private func drawFallbackGradient(context: CGContext, size: CGSize, settings: DesignSettings) {
@@ -75,38 +72,6 @@ public struct GlassRenderer: WallpaperRenderer {
             start: CGPoint(x: size.width / 2, y: 0),
             end: CGPoint(x: size.width / 2, y: size.height),
             options: []
-        )
-    }
-
-    // MARK: - Clock Rendering
-
-    private func drawClock(context: CGContext, size: CGSize, date: Date, settings: DesignSettings) {
-        let formatter = DateFormatter()
-        formatter.timeStyle = .short
-        let timeString = formatter.string(from: date)
-
-        let fontSize = size.height * 0.06
-        let font = TextRenderer.font(from: settings.fontFamily, size: fontSize, weight: .bold)
-        let textColor = ColorUtils.color(from: settings.textColor)
-        let shadow = TextRenderer.standardTextShadow(strength: settings.textShadow / 10.0)
-
-        let padding = size.width * 0.08
-        let topPadding = size.height * 0.12
-        let textRect = CGRect(
-            x: padding,
-            y: topPadding,
-            width: size.width - (padding * 2),
-            height: fontSize * 1.5
-        )
-
-        TextRenderer.drawText(
-            timeString,
-            in: context,
-            rect: textRect,
-            font: font,
-            color: textColor,
-            alignment: .center,
-            shadow: shadow
         )
     }
 
@@ -241,11 +206,6 @@ public struct GlassRenderer: WallpaperRenderer {
         for (index, event) in displayEvents.enumerated() {
             let y = eventsStartY + (CGFloat(index) * lineHeight)
 
-            // Time formatter
-            let timeFormatter = DateFormatter()
-            timeFormatter.timeStyle = .short
-            let timeString = timeFormatter.string(from: event.startTime)
-
             // Draw calendar color dot
             let dotX = cardRect.minX + padding
             let dotY = y + (lineHeight / 2)
@@ -262,10 +222,9 @@ public struct GlassRenderer: WallpaperRenderer {
             )
             context.fillPath()
 
-            // Draw time + title
+            // Draw title
             let textX = dotX + (dotRadius * 2) + dotSpacing
             let textWidth = cardRect.width - (padding * 2) - (dotRadius * 2) - dotSpacing
-            let eventText = "\(timeString)  \(event.truncatedTitle)"
 
             let textRect = CGRect(
                 x: textX,
@@ -275,7 +234,7 @@ public struct GlassRenderer: WallpaperRenderer {
             )
 
             TextRenderer.drawText(
-                eventText,
+                event.truncatedTitle,
                 in: context,
                 rect: textRect,
                 font: font,

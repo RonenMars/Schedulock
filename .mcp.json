@@ -1,118 +1,86 @@
 {
-    "mcpServers": {
-        "playwright": {
-            "type": "stdio",
-            "command": "npx",
-            "args": [
-                "-y",
-                "@playwright/mcp@latest"
-            ],
-            "env": {}
-        },
-        "eslint": {
-            "type": "stdio",
-            "command": "npx",
-            "args": [
-                "-y",
-                "@eslint/mcp"
-            ],
-            "env": {}
-        },
-        "chrome-devtools": {
-            "type": "stdio",
-            "command": "npx",
-            "args": [
-                "-y",
-                "chrome-devtools-mcp@latest"
-            ],
-            "env": {}
-        },
-        "task-master-ai": {
-            "type": "stdio",
-            "command": "npx",
-            "args": [
-                "-y",
-                "--package=task-master-ai",
-                "task-master-ai"
-            ],
-            "env": {
-                "ANTHROPIC_API_KEY": "${ANTHROPIC_API_KEY}",
-                "PERPLEXITY_API_KEY": "${PERPLEXITY_API_KEY}"
-            }
-        },
-        "octocode": {
-            "type": "stdio",
-            "command": "npx",
-            "args": [
-                "octocode-mcp@latest"
-            ],
-            "env": {
-                "GITHUB_TOKEN": "${GITHUB_TOKEN}"
-            }
-        },
-        "serena": {
-            "type": "stdio",
-            "command": "uvx",
-            "args": [
-                "--from",
-                "git+https://github.com/oraios/serena",
-                "serena",
-                "start-mcp-server",
-                "--context",
-                "claude-code",
-                "--project",
-                ".",
-                "--enable-web-dashboard",
-                "False"
-            ],
-            "env": {}
-        },
-        "github": {
-            "type": "stdio",
-            "command": "npx",
-            "args": [
-                "-y",
-                "@modelcontextprotocol/server-github"
-            ],
-            "env": {
-                "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_PERSONAL_ACCESS_TOKEN}"
-            }
-        },
-        "xcodebuildmcp": {
-            "type": "stdio",
-            "command": "npx",
-            "args": [
-                "-y",
-                "xcodebuildmcp@latest",
-                "mcp"
-            ],
-            "env": {}
-        },
-        "apple-docs": {
-            "type": "stdio",
-            "command": "npx",
-            "args": [
-                "-y",
-                "@kimsungwhee/apple-docs-mcp@latest"
-            ],
-            "env": {}
-        },
-        "mobile-mcp": {
-            "type": "stdio",
-            "command": "npx",
-            "args": [
-                "-y",
-                "@mobilenext/mobile-mcp@latest"
-            ],
-            "env": {}
-        },
-        "swiftlens": {
-            "type": "stdio",
-            "command": "uvx",
-            "args": [
-                "swiftlens"
-            ],
-            "env": {}
-        }
+  "mcpServers": {
+    "playwright": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@playwright/mcp@latest"],
+      "env": {}
+    },
+    "eslint": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@eslint/mcp"],
+      "env": {}
+    },
+    "chrome-devtools": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "chrome-devtools-mcp@latest"],
+      "env": {}
+    },
+    "task-master-ai": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "--package=task-master-ai", "task-master-ai"],
+      "env": {
+        "ANTHROPIC_API_KEY": "${ANTHROPIC_API_KEY}",
+        "PERPLEXITY_API_KEY": "${PERPLEXITY_API_KEY}"
+      }
+    },
+    "octocode": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["octocode-mcp@latest"],
+      "env": {
+        "GITHUB_TOKEN": "${GITHUB_TOKEN}"
+      }
+    },
+    "serena": {
+      "type": "stdio",
+      "command": "uvx",
+      "args": [
+        "--from",
+        "git+https://github.com/oraios/serena",
+        "serena",
+        "start-mcp-server",
+        "--context",
+        "claude-code",
+        "--project",
+        ".",
+        "--enable-web-dashboard",
+        "False"
+      ],
+      "env": {}
+    },
+    "github": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-github"],
+      "env": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_PERSONAL_ACCESS_TOKEN}"
+      }
+    },
+    "xcodebuildmcp": {
+      "command": "xcodebuildmcp",
+      "args": ["mcp"]
+    },
+    "apple-docs": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@kimsungwhee/apple-docs-mcp@latest"],
+      "env": {}
+    },
+    "mobile-mcp": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@mobilenext/mobile-mcp@latest"],
+      "env": {}
+    },
+    "swiftlens": {
+      "type": "stdio",
+      "command": "uvx",
+      "args": ["--python", "3.13", "swiftlens"],
+      "env": {}
     }
+  }
 }

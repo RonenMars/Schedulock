@@ -12,6 +12,9 @@ struct OnboardingView: View {
     @State private var enabledCalendarIDs: Set<String> = []
     @State private var selectedTemplateType: TemplateType = .minimal
     @State private var calendarAccessGranted = false
+    @State private var viewModel = WallpaperViewModel()
+    @State private var isGeneratingInitialWallpaper = false
+    @State private var isLoadingImage = false
 
     let onComplete: () -> Void
 
@@ -66,7 +69,7 @@ struct OnboardingView: View {
                     .cornerRadius(DesignTokens.cardRadius)
             }
             .padding(.horizontal, DesignTokens.spacingXL)
-            .padding(.bottom, DesignTokens.spacingLG)
+            .padding(.bottom, 50)
         }
         .padding()
     }
@@ -142,9 +145,19 @@ struct OnboardingView: View {
                 }
             }
             .padding(.horizontal, DesignTokens.spacingXL)
-            .padding(.bottom, DesignTokens.spacingLG)
+            .padding(.bottom, 50)
         }
         .padding()
+        .onAppear {
+            if CalendarDataProvider.authorizationStatus == .fullAccess {
+                availableCalendars = calendarProvider.fetchCalendars()
+                enabledCalendarIDs = Set(availableCalendars.map { $0.calendarIdentifier })
+                calendarAccessGranted = true
+                withAnimation(.spring(response: 0.4, dampingFraction: 0.7)) {
+                    currentPage = 2
+                }
+            }
+        }
     }
 
     // MARK: - Screen 3: Choose Photo
@@ -170,7 +183,14 @@ struct OnboardingView: View {
                     .padding(.horizontal)
             }
 
-            if let selectedImage {
+            if isLoadingImage {
+                RoundedRectangle(cornerRadius: DesignTokens.cardRadius)
+                    .fill(DesignTokens.surface)
+                    .frame(width: 200, height: 200)
+                    .overlay {
+                        ProgressView().tint(DesignTokens.primary)
+                    }
+            } else if let selectedImage {
                 Image(uiImage: selectedImage)
                     .resizable()
                     .scaledToFill()
@@ -194,40 +214,69 @@ struct OnboardingView: View {
             Spacer()
 
             VStack(spacing: DesignTokens.spacingMD) {
-                PhotosPicker(selection: $selectedPhotoItem, matching: .images) {
-                    HStack {
-                        Image(systemName: selectedImage == nil ? "photo.on.rectangle" : "arrow.triangle.2.circlepath")
-                        Text(selectedImage == nil ? "Select Photo" : "Change Photo")
-                    }
-                    .font(.headline)
-                    .foregroundColor(.white)
-                    .frame(maxWidth: .infinity)
-                    .padding()
-                    .background(DesignTokens.accentGradient)
-                    .cornerRadius(DesignTokens.cardRadius)
-                }
-                .onChange(of: selectedPhotoItem) { _, newItem in
-                    Task {
-                        if let data = try? await newItem?.loadTransferable(type: Data.self),
-                           let image = UIImage(data: data) {
-                            selectedImage = image
-                            saveSelectedImage(image)
+                if selectedImage != nil {
+                    // Image selected: Continue as primary, Change Image as secondary
+                    Button {
+                        withAnimation(.spring(response: 0.4, dampingFraction: 0.7)) {
+                            currentPage = 3
                         }
+                    } label: {
+                        Text("Continue")
+                            .font(.headline)
+                            .foregroundColor(.white)
+                            .frame(maxWidth: .infinity)
+                            .padding()
+                            .background(DesignTokens.accentGradient)
+                            .cornerRadius(DesignTokens.cardRadius)
                     }
-                }
 
-                Button {
-                    withAnimation(.spring(response: 0.4, dampingFraction: 0.7)) {
-                        currentPage = 3
-                    }
-                } label: {
-                    Text(selectedImage == nil ? "Skip for gradient background" : "Continue")
+                    PhotosPicker(selection: $selectedPhotoItem, matching: .images) {
+                        HStack {
+                            Image(systemName: "arrow.triangle.2.circlepath")
+                            Text("Change Image")
+                        }
                         .font(.subheadline)
                         .foregroundColor(DesignTokens.textMuted)
+                    }
+                } else {
+                    // No image: Select Photo as primary, Skip as secondary
+                    PhotosPicker(selection: $selectedPhotoItem, matching: .images) {
+                        HStack {
+                            Image(systemName: "photo.on.rectangle")
+                            Text("Select Photo")
+                        }
+                        .font(.headline)
+                        .foregroundColor(.white)
+                        .frame(maxWidth: .infinity)
+                        .padding()
+                        .background(DesignTokens.accentGradient)
+                        .cornerRadius(DesignTokens.cardRadius)
+                    }
+
+                    Button {
+                        withAnimation(.spring(response: 0.4, dampingFraction: 0.7)) {
+                            currentPage = 3
+                        }
+                    } label: {
+                        Text("Skip for gradient background")
+                            .font(.subheadline)
+                            .foregroundColor(DesignTokens.textMuted)
+                    }
+                }
+            }
+            .onChange(of: selectedPhotoItem) { _, newItem in
+                Task {
+                    isLoadingImage = true
+                    if let data = try? await newItem?.loadTransferable(type: Data.self),
+                       let image = UIImage(data: data) {
+                        selectedImage = image
+                        saveSelectedImage(image)
+                    }
+                    isLoadingImage = false
                 }
             }
             .padding(.horizontal, DesignTokens.spacingXL)
-            .padding(.bottom, DesignTokens.spacingLG)
+            .padding(.bottom, 50)
         }
         .padding()
     }
@@ -246,12 +295,24 @@ struct OnboardingView: View {
                     .foregroundColor(DesignTokens.textPrimary)
 
                 if !calendarAccessGranted || availableCalendars.isEmpty {
-                    Text("Calendar access not granted. All calendars will be used by default.")
-                        .font(.system(size: 16))
-                        .foregroundColor(DesignTokens.textMuted)
-                        .multilineTextAlignment(.center)
-                        .padding(.horizontal)
-                        .padding(.top, DesignTokens.spacingLG)
+                    VStack(spacing: DesignTokens.spacingMD) {
+                        Text("Calendar access not granted. Sample events will be shown until you grant access.")
+                            .font(.system(size: 16))
+                            .foregroundColor(DesignTokens.textMuted)
+                            .multilineTextAlignment(.center)
+                            .padding(.horizontal)
+
+                        Button {
+                            if let settingsURL = URL(string: UIApplication.openSettingsURLString) {
+                                UIApplication.shared.open(settingsURL)
+                            }
+                        } label: {
+                            Text("Open Settings to Grant Access")
+                                .font(.subheadline)
+                                .foregroundColor(DesignTokens.primary)
+                        }
+                    }
+                    .padding(.top, DesignTokens.spacingLG)
                 } else {
                     Text("Choose which calendars to show on your wallpaper")
                         .font(.system(size: 16))
@@ -263,6 +324,22 @@ struct OnboardingView: View {
             .padding(.top, DesignTokens.spacingXL)
 
             if calendarAccessGranted && !availableCalendars.isEmpty {
+                let allSelected = enabledCalendarIDs.count == availableCalendars.count
+
+                HStack {
+                    Button(allSelected ? "Deselect All" : "Select All") {
+                        if allSelected {
+                            enabledCalendarIDs = []
+                        } else {
+                            enabledCalendarIDs = Set(availableCalendars.map { $0.calendarIdentifier })
+                        }
+                    }
+                    .font(.subheadline)
+                    .foregroundColor(DesignTokens.primary)
+                    Spacer()
+                }
+                .padding(.horizontal)
+
                 ScrollView {
                     VStack(spacing: DesignTokens.spacingSM) {
                         ForEach(availableCalendars, id: \.calendarIdentifier) { calendar in
@@ -315,7 +392,7 @@ struct OnboardingView: View {
                     .cornerRadius(DesignTokens.cardRadius)
             }
             .padding(.horizontal, DesignTokens.spacingXL)
-            .padding(.bottom, DesignTokens.spacingLG)
+            .padding(.bottom, 50)
         }
     }
 
@@ -366,7 +443,7 @@ struct OnboardingView: View {
                     .cornerRadius(DesignTokens.cardRadius)
             }
             .padding(.horizontal, DesignTokens.spacingXL)
-            .padding(.bottom, DesignTokens.spacingLG)
+            .padding(.bottom, 50)
         }
     }
 
@@ -452,6 +529,19 @@ struct OnboardingView: View {
                 }
 
                 Button {
+                    if let url = URL(string: "shortcuts://") {
+                        UIApplication.shared.open(url)
+                    }
+                } label: {
+                    HStack(spacing: DesignTokens.spacingSM) {
+                        Image(systemName: "arrow.up.forward.app")
+                        Text("Open Shortcuts App")
+                    }
+                    .font(.subheadline)
+                    .foregroundColor(DesignTokens.primary)
+                }
+
+                Button {
                     withAnimation(.spring(response: 0.4, dampingFraction: 0.7)) {
                         currentPage = 6
                     }
@@ -462,7 +552,7 @@ struct OnboardingView: View {
                 }
             }
             .padding(.horizontal, DesignTokens.spacingXL)
-            .padding(.bottom, DesignTokens.spacingLG)
+            .padding(.bottom, 50)
         }
         .padding()
     }
@@ -499,18 +589,29 @@ struct OnboardingView: View {
             Spacer()
 
             Button {
-                completeOnboarding()
+                Task {
+                    isGeneratingInitialWallpaper = true
+                    await generateInitialWallpaper()
+                    completeOnboarding()
+                }
             } label: {
-                Text("Generate First Wallpaper")
-                    .font(.headline)
-                    .foregroundColor(.white)
-                    .frame(maxWidth: .infinity)
-                    .padding()
-                    .background(DesignTokens.accentGradient)
-                    .cornerRadius(DesignTokens.cardRadius)
+                Group {
+                    if isGeneratingInitialWallpaper {
+                        ProgressView().tint(.white)
+                    } else {
+                        Text("Generate First Wallpaper")
+                            .font(.headline)
+                            .foregroundColor(.white)
+                    }
+                }
+                .frame(maxWidth: .infinity)
+                .padding()
+                .background(DesignTokens.accentGradient)
+                .cornerRadius(DesignTokens.cardRadius)
             }
+            .disabled(isGeneratingInitialWallpaper)
             .padding(.horizontal, DesignTokens.spacingXL)
-            .padding(.bottom, DesignTokens.spacingLG)
+            .padding(.bottom, 50)
         }
         .padding()
     }
@@ -531,6 +632,34 @@ struct OnboardingView: View {
 
     private func saveTemplateSelection() {
         AppGroupManager.userDefaults.set(selectedTemplateType.rawValue, forKey: "defaultTemplateType")
+    }
+
+    private func generateInitialWallpaper() async {
+        viewModel.backgroundImage = selectedImage
+        viewModel.selectedTemplateType = selectedTemplateType
+
+        let enabledIDs = Array(enabledCalendarIDs)
+        let events: [CalendarEvent]
+        if calendarAccessGranted {
+            events = calendarProvider.fetchTodayEvents(
+                from: enabledIDs,
+                excludeDeclined: true,
+                maxEvents: 6
+            )
+        } else {
+            events = WallpaperViewModel.sampleEvents
+        }
+
+        AppGroupManager.ensureDirectoriesExist()
+        guard let wallpaper = viewModel.generateFullResolution(
+            events: events,
+            resolution: .iPhone16Pro
+        ) else { return }
+
+        let wallpaperURL = AppGroupManager.wallpaperDirectory.appending(path: "current.png")
+        if let pngData = wallpaper.pngData() {
+            try? pngData.write(to: wallpaperURL)
+        }
     }
 
     private func completeOnboarding() {

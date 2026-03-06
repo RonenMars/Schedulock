@@ -72,7 +72,12 @@ public final class WallpaperEngine: Sendable {
         // 4. Process background image if provided (resize to fit resolution)
         let processedImage = image.map { resizeImage($0, toFit: size) }
 
-        // 5. Call the renderer to draw into the context
+        // 5. Flip to UIKit coordinate system (Y-down, origin top-left)
+        //    Raw CGContext has Y-up (origin bottom-left); all renderers use UIKit conventions.
+        context.translateBy(x: 0, y: size.height)
+        context.scaleBy(x: 1.0, y: -1.0)
+
+        // 6. Call the renderer to draw into the context
         renderer.render(
             context: context,
             size: size,
@@ -133,9 +138,13 @@ public final class WallpaperEngine: Sendable {
 
         context.interpolationQuality = .high
 
-        if let cgImage = image.cgImage {
-            context.draw(cgImage, in: drawRect)
-        }
+        // Flip to UIKit coordinate space so the image draws right-side up and
+        // UIImage.draw(in:) correctly applies the photo's orientation metadata.
+        context.translateBy(x: 0, y: size.height)
+        context.scaleBy(x: 1.0, y: -1.0)
+        UIGraphicsPushContext(context)
+        image.draw(in: drawRect)
+        UIGraphicsPopContext()
 
         guard let resizedCGImage = context.makeImage() else {
             return image

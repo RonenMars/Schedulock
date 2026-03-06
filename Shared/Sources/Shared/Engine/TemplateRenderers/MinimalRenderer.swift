@@ -3,7 +3,7 @@ import CoreGraphics
 import Foundation
 
 /// Minimal template renderer: Let the photo breathe with subtle overlays.
-/// Clock and events overlay with subtle gradients for maximum photo visibility.
+/// Events overlay with subtle gradients for maximum photo visibility.
 public struct MinimalRenderer: WallpaperRenderer {
     public let templateType: TemplateType = .minimal
 
@@ -30,18 +30,13 @@ public struct MinimalRenderer: WallpaperRenderer {
         // 3. Bottom gradient overlay (transparent → black)
         drawBottomGradientOverlay(context: context, size: size, opacity: settings.overlayOpacity)
 
-        // 4. Draw large clock at top
-        drawClock(context: context, size: size, date: date, settings: settings)
-
-        // 5. Draw events at bottom
+        // 4. Draw events at bottom
         drawEvents(context: context, size: size, events: events, settings: settings)
     }
 
     // MARK: - Background Rendering
 
     private func drawBackgroundImage(context: CGContext, size: CGSize, image: UIImage) {
-        guard let cgImage = image.cgImage else { return }
-
         let imageAspect = image.size.width / image.size.height
         let canvasAspect = size.width / size.height
 
@@ -60,7 +55,9 @@ public struct MinimalRenderer: WallpaperRenderer {
             drawRect = CGRect(x: 0, y: yOffset, width: drawWidth, height: drawHeight)
         }
 
-        context.draw(cgImage, in: drawRect)
+        UIGraphicsPushContext(context)
+        image.draw(in: drawRect)
+        UIGraphicsPopContext()
     }
 
     private func drawFallbackGradient(context: CGContext, size: CGSize, settings: DesignSettings) {
@@ -128,38 +125,6 @@ public struct MinimalRenderer: WallpaperRenderer {
             start: CGPoint(x: size.width / 2, y: startY),
             end: CGPoint(x: size.width / 2, y: size.height),
             options: []
-        )
-    }
-
-    // MARK: - Clock Rendering
-
-    private func drawClock(context: CGContext, size: CGSize, date: Date, settings: DesignSettings) {
-        let formatter = DateFormatter()
-        formatter.timeStyle = .short
-        let timeString = formatter.string(from: date)
-
-        let fontSize = size.height * 0.08
-        let font = TextRenderer.font(from: settings.fontFamily, size: fontSize, weight: .bold)
-        let textColor = ColorUtils.color(from: settings.textColor)
-        let shadow = TextRenderer.standardTextShadow(strength: settings.textShadow / 10.0)
-
-        let padding = size.width * 0.08
-        let topPadding = size.height * 0.08
-        let textRect = CGRect(
-            x: padding,
-            y: topPadding,
-            width: size.width - (padding * 2),
-            height: fontSize * 1.5
-        )
-
-        TextRenderer.drawText(
-            timeString,
-            in: context,
-            rect: textRect,
-            font: font,
-            color: textColor,
-            alignment: .left,
-            shadow: shadow
         )
     }
 

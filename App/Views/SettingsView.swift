@@ -291,19 +291,6 @@ struct SettingsView: View {
     }
 }
 
-// MARK: - Extensions
-extension DeviceResolution: Equatable, Hashable {
-    public static func == (lhs: DeviceResolution, rhs: DeviceResolution) -> Bool {
-        lhs.name == rhs.name && lhs.width == rhs.width && lhs.height == rhs.height
-    }
-
-    public func hash(into hasher: inout Hasher) {
-        hasher.combine(name)
-        hasher.combine(width)
-        hasher.combine(height)
-    }
-}
-
 // MARK: - Preview
 #Preview {
     SettingsView()

@@ -3,7 +3,7 @@ import CoreGraphics
 
 /// Device resolution registry for all supported iPhone models.
 /// Used to generate wallpapers at exact device-native resolutions.
-public struct DeviceResolution: Sendable {
+public struct DeviceResolution: Sendable, Equatable, Hashable {
     public let width: Int
     public let height: Int
     public let scale: Int

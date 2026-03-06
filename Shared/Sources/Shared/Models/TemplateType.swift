@@ -1,7 +1,8 @@
 import Foundation
 
 /// The six built-in wallpaper template styles.
-public enum TemplateType: String, Codable, CaseIterable, Sendable {
+public enum TemplateType: String, Codable, CaseIterable, Sendable, Identifiable {
+    public var id: String { rawValue }
     case minimal
     case glass
     case gradient

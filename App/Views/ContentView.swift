@@ -23,13 +23,13 @@ struct ContentView: View {
 
     private var mainTabView: some View {
         TabView(selection: $selectedTab) {
-            HomeView()
+            HomeView(selectedTab: $selectedTab)
                 .tabItem {
                     Label("Home", systemImage: "house.fill")
                 }
                 .tag(0)
 
-            TemplateGalleryView()
+            TemplateGalleryView(selectedTab: $selectedTab)
                 .tabItem {
                     Label("Templates", systemImage: "rectangle.grid.2x2.fill")
                 }
@@ -49,6 +49,19 @@ struct ContentView: View {
         }
         .tint(DesignTokens.primary)
         .onAppear { seedTemplateSettingsIfNeeded() }
+        .simultaneousGesture(
+            DragGesture(minimumDistance: 30, coordinateSpace: .local)
+                .onEnded { value in
+                    let horizontal = value.translation.width
+                    let vertical = value.translation.height
+                    guard abs(horizontal) > abs(vertical) else { return }
+                    if horizontal < 0 {
+                        selectedTab = min(selectedTab + 1, 3)
+                    } else {
+                        selectedTab = max(selectedTab - 1, 0)
+                    }
+                }
+        )
     }
 
     private func seedTemplateSettingsIfNeeded() {

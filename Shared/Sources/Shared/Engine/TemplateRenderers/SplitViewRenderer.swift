@@ -72,20 +72,21 @@ public struct SplitViewRenderer: WallpaperRenderer {
         let shadow = TextRenderer.standardTextShadow(strength: settings.textShadow)
 
         // 6. Draw date header in bottom panel
+        let scale = size.width / 390.0
         let calendar = Calendar.current
         let dayName = date.formatted(.dateTime.weekday(.wide))
         let dateNumber = calendar.component(.day, from: date)
         let monthName = date.formatted(.dateTime.month(.abbreviated))
 
-        let headerFont = TextRenderer.font(from: settings.fontFamily, size: 28, weight: .bold)
+        let headerFont = TextRenderer.font(from: settings.fontFamily, size: 28 * scale, weight: .bold)
         let headerText = "\(dayName), \(monthName) \(dateNumber)"
 
-        let headerY = splitY + 30
+        let headerY = splitY + 30 * scale
         let headerRect = CGRect(
-            x: 40,
+            x: 40 * scale,
             y: headerY,
-            width: size.width - 80,
-            height: 40
+            width: size.width - 80 * scale,
+            height: 40 * scale
         )
 
         TextRenderer.drawText(
@@ -123,31 +124,32 @@ public struct SplitViewRenderer: WallpaperRenderer {
     ) {
         guard !events.isEmpty else { return }
 
-        let eventFont = TextRenderer.font(from: settings.fontFamily, size: 15, weight: .regular)
-        let eventHeight: CGFloat = 32
-        let eventPadding: CGFloat = 4
-        let startY = headerY + 60
+        let scale = size.width / 390.0
+        let eventFont = TextRenderer.font(from: settings.fontFamily, size: 15 * scale, weight: .regular)
+        let eventHeight: CGFloat = 32 * scale
+        let eventPadding: CGFloat = 4 * scale
+        let startY = headerY + 60 * scale
 
         // Calculate available space
-        let bottomPadding: CGFloat = 40
+        let bottomPadding: CGFloat = 40 * scale
         let availableHeight = size.height - startY - bottomPadding
         let maxEvents = max(0, min(events.count, Int(availableHeight / (eventHeight + eventPadding))))
 
         for (index, event) in events.prefix(maxEvents).enumerated() {
             let eventY = startY + (CGFloat(index) * (eventHeight + eventPadding))
 
-            // Draw calendar color bar (4pt wide, 20pt tall)
+            // Draw calendar color bar
             let barColor = settings.useCalendarColors ? event.calendarColor : ColorUtils.color(from: settings.accentColor)
             context.saveGState()
             context.setFillColor(barColor.cgColor)
-            context.fill(CGRect(x: 40, y: eventY + 4, width: 4, height: 20))
+            context.fill(CGRect(x: 40 * scale, y: eventY + 4 * scale, width: 4 * scale, height: 20 * scale))
             context.restoreGState()
 
             // Draw event title
             let titleRect = CGRect(
-                x: 56,
+                x: 56 * scale,
                 y: eventY,
-                width: size.width - 96,
+                width: size.width - 96 * scale,
                 height: eventHeight
             )
 

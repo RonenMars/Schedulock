@@ -3,6 +3,7 @@ import SwiftData
 import Shared
 
 struct TemplateGalleryView: View {
+    @Binding var selectedTab: Int
     @State private var viewModel = WallpaperViewModel()
     @State private var navPath: [TemplateType] = []
     @Query private var allSavedSettings: [SavedTemplateSettings]
@@ -45,7 +46,7 @@ struct TemplateGalleryView: View {
             .toolbarColorScheme(.dark, for: .navigationBar)
             .onAppear { loadSavedBackgroundImage() }
             .navigationDestination(for: TemplateType.self) { template in
-                TemplateEditorView(templateType: template, viewModel: viewModel)
+                TemplateEditorView(templateType: template, viewModel: viewModel, selectedTab: $selectedTab)
             }
         }
     }

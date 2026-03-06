@@ -18,6 +18,8 @@
 	<string>APPL</string>
 	<key>UILaunchScreen</key>
 	<dict/>
+	<key>UIRequiresFullScreen</key>
+	<true/>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
@@ -26,6 +28,10 @@
 	<array>
 		<string>com.ronenmars.Schedulock.wallpaper-generation</string>
 	</array>
+	<key>NSCalendarsFullAccessUsageDescription</key>
+	<string>Schedulock reads your calendar to display today's agenda on your lock screen wallpaper. No data leaves your device.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>Schedulock can save your generated wallpaper to your photo library.</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
 </dict>

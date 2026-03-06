@@ -5,6 +5,7 @@ import Shared
 struct TemplateEditorView: View {
     let templateType: TemplateType
     @Bindable var viewModel: WallpaperViewModel
+    @Binding var selectedTab: Int
     @State private var settings: DesignSettings = .default
     @State private var showFinalPreview = false
     @State private var isApproving = false
@@ -99,7 +100,7 @@ struct TemplateEditorView: View {
                     let gap = DesignTokens.spacingMD
                     let imageH = geo.size.height - buttonH - gap - bottomPad
                     let imageW = min(geo.size.width - hPad * 2, imageH * 9.0 / 19.5)
-                    let halfW = (imageW - DesignTokens.spacingSM) / 2
+                    let halfW = max(0, (imageW - DesignTokens.spacingSM) / 2)
 
                     VStack(spacing: gap) {
                         Group {
@@ -141,6 +142,7 @@ struct TemplateEditorView: View {
                                     approveTemplate()
                                     isApproving = false
                                     showFinalPreview = false
+                                    selectedTab = 0
                                     dismiss()
                                 }
                             } label: {
