@@ -163,6 +163,9 @@ struct HomeView: View {
                     calendarProvider.resetAndRefresh()
                 }
             }
+            .onReceive(NotificationCenter.default.publisher(for: .googleCalendarSyncDidComplete)) { _ in
+                generateWallpaper()
+            }
         }
     }
 

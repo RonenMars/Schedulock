@@ -1,6 +1,10 @@
 import SwiftUI
 import Shared
 
+extension Notification.Name {
+    static let googleCalendarSyncDidComplete = Notification.Name("googleCalendarSyncDidComplete")
+}
+
 /// ViewModel for Google Calendar sign-in state and synced events.
 /// Follows the project's @Observable pattern (CalendarViewModel, WallpaperViewModel).
 @Observable
@@ -105,6 +109,7 @@ final class GoogleCalendarViewModel {
                 todayEvents = syncService.store.todayEvents()
                 lastSyncDate = syncService.store.lastSyncDate
                 isSyncing = false
+                NotificationCenter.default.post(name: .googleCalendarSyncDidComplete, object: nil)
             }
         } catch {
             await MainActor.run {
@@ -129,6 +134,7 @@ final class GoogleCalendarViewModel {
                 todayEvents = syncService.store.todayEvents()
                 lastSyncDate = syncService.store.lastSyncDate
                 isSyncing = false
+                NotificationCenter.default.post(name: .googleCalendarSyncDidComplete, object: nil)
             }
         } catch {
             await MainActor.run {
