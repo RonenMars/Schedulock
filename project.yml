@@ -10,6 +10,9 @@ options:
 packages:
   Shared:
     path: Shared
+  GoogleSignIn:
+    url: https://github.com/google/GoogleSignIn-iOS
+    majorVersion: 8.0.0
 
 targets:
   Schedulock:
@@ -22,6 +25,8 @@ targets:
       - path: App/PrivacyInfo.xcprivacy
     dependencies:
       - package: Shared
+      - package: GoogleSignIn
+        product: GoogleSignIn
       - target: SchedulockWidgetExtension
     settings:
       base:

@@ -1,6 +1,7 @@
 import SwiftUI
 import SwiftData
 import Shared
+import GoogleSignIn
 
 @main
 struct SchedulockApp: App {
@@ -17,6 +18,12 @@ struct SchedulockApp: App {
         WindowGroup {
             ContentView()
                 .preferredColorScheme(.dark)
+                .onOpenURL { url in
+                    GoogleAuthService.shared.handle(url)
+                }
+                .task {
+                    await GoogleAuthService.shared.restorePreviousSignIn()
+                }
         }
         .modelContainer(for: [
             WallpaperTemplate.self,
