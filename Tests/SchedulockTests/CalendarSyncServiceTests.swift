@@ -42,7 +42,7 @@ final class CalendarSyncServiceTests: XCTestCase {
     // MARK: - Full Sync (no existing token)
 
     func testFullSyncWhenNoToken() async throws {
-        XCTAssertNil(store.syncToken, "Precondition: no sync token")
+        XCTAssertNil(store.syncToken(for: "primary"), "Precondition: no sync token")
 
         stubResponse(json: """
         {
@@ -59,7 +59,7 @@ final class CalendarSyncServiceTests: XCTestCase {
         let count = try await service.sync()
 
         XCTAssertEqual(count, 1)
-        XCTAssertEqual(store.syncToken, "fresh_token")
+        XCTAssertEqual(store.syncToken(for: "primary"), "fresh_token")
         XCTAssertNotNil(store.lastSyncDate)
         XCTAssertEqual(store.loadEvents().first?.summary, "Event One")
     }
@@ -74,7 +74,7 @@ final class CalendarSyncServiceTests: XCTestCase {
                 isAllDay: false, location: nil, calendarId: "primary", status: "confirmed"
             )
         ])
-        store.syncToken = "old_token"
+        store.setSyncToken("old_token", for: "primary")
         store.lastSyncDate = Date.distantPast // bypass freshness guard
 
         stubResponse(json: """
@@ -92,13 +92,13 @@ final class CalendarSyncServiceTests: XCTestCase {
         let count = try await service.sync()
 
         XCTAssertEqual(count, 2, "Should have existing + new event")
-        XCTAssertEqual(store.syncToken, "new_token")
+        XCTAssertEqual(store.syncToken(for: "primary"), "new_token")
     }
 
     // MARK: - 410 Gone Recovery
 
     func testHTTP410TriggersFullResync() async throws {
-        store.syncToken = "expired_token"
+        store.setSyncToken("expired_token", for: "primary")
         store.lastSyncDate = Date.distantPast
         store.replaceAllEvents([
             GoogleCalendarEvent(
@@ -136,7 +136,7 @@ final class CalendarSyncServiceTests: XCTestCase {
 
         XCTAssertEqual(callCount, 2, "Should make incremental + full sync requests")
         XCTAssertEqual(count, 1, "Should only have the fresh event")
-        XCTAssertEqual(store.syncToken, "recovered_token")
+        XCTAssertEqual(store.syncToken(for: "primary"), "recovered_token")
         XCTAssertFalse(store.loadEvents().contains { $0.id == "stale" }, "Stale events should be cleared")
     }
 
@@ -153,7 +153,7 @@ final class CalendarSyncServiceTests: XCTestCase {
                 isAllDay: false, location: nil, calendarId: "primary", status: "confirmed"
             ),
         ])
-        store.syncToken = "tok"
+        store.setSyncToken("tok", for: "primary")
         store.lastSyncDate = Date.distantPast
 
         stubResponse(json: """
@@ -177,7 +177,7 @@ final class CalendarSyncServiceTests: XCTestCase {
     // MARK: - Freshness Guard
 
     func testFreshnessGuardSkipsRecentSync() async throws {
-        store.syncToken = "tok"
+        store.setSyncToken("tok", for: "primary")
         store.lastSyncDate = Date() // just synced
 
         var apiCalled = false
@@ -193,7 +193,7 @@ final class CalendarSyncServiceTests: XCTestCase {
     }
 
     func testFreshnessGuardBypassedWhenRequested() async throws {
-        store.syncToken = "tok"
+        store.setSyncToken("tok", for: "primary")
         store.lastSyncDate = Date() // just synced
 
         stubResponse(json: """
@@ -207,11 +207,11 @@ final class CalendarSyncServiceTests: XCTestCase {
         _ = try await service.sync(ignoresFreshnessGuard: true)
 
         // If we get here without crash, the API was called (mock responded)
-        XCTAssertEqual(store.syncToken, "new_tok")
+        XCTAssertEqual(store.syncToken(for: "primary"), "new_tok")
     }
 
     func testFreshnessGuardAllowsSyncAfterInterval() async throws {
-        store.syncToken = "tok"
+        store.setSyncToken("tok", for: "primary")
         store.lastSyncDate = Date(timeIntervalSinceNow: -400) // 400s ago, > 300s threshold
 
         stubResponse(json: """
@@ -224,7 +224,7 @@ final class CalendarSyncServiceTests: XCTestCase {
 
         _ = try await service.sync()
 
-        XCTAssertEqual(store.syncToken, "updated_tok", "Should sync when interval has elapsed")
+        XCTAssertEqual(store.syncToken(for: "primary"), "updated_tok", "Should sync when interval has elapsed")
     }
 
     // MARK: - Auth Guard
@@ -245,7 +245,7 @@ final class CalendarSyncServiceTests: XCTestCase {
     // MARK: - Force Full Sync
 
     func testForceFullSyncClearsAndResyncs() async throws {
-        store.syncToken = "old"
+        store.setSyncToken("old", for: "primary")
         store.replaceAllEvents([
             GoogleCalendarEvent(
                 id: "old", summary: "Old", startDate: Date(), endDate: Date().addingTimeInterval(3600),
@@ -268,7 +268,7 @@ final class CalendarSyncServiceTests: XCTestCase {
         let count = try await service.forceFullSync()
 
         XCTAssertEqual(count, 1)
-        XCTAssertEqual(store.syncToken, "force_token")
+        XCTAssertEqual(store.syncToken(for: "primary"), "force_token")
         XCTAssertFalse(store.loadEvents().contains { $0.id == "old" })
     }
 
@@ -306,7 +306,7 @@ final class CalendarSyncServiceTests: XCTestCase {
 
         _ = try await service.sync()
 
-        XCTAssertEqual(store.syncToken, "final_page_token")
+        XCTAssertEqual(store.syncToken(for: "primary"), "final_page_token")
         XCTAssertEqual(store.loadEvents().count, 2)
     }
 

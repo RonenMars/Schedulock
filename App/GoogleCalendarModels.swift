@@ -1,5 +1,23 @@
 import Foundation
 
+// MARK: - Google Calendar List Response DTOs
+
+/// Top-level response from GET /users/me/calendarList
+struct GCalCalendarList: Codable {
+    let kind: String?
+    let items: [GCalCalendarListEntry]?
+}
+
+/// A single calendar from the user's calendar list.
+struct GCalCalendarListEntry: Codable, Identifiable {
+    let id: String
+    let summary: String?
+    let backgroundColor: String?
+    let accessRole: String?      // "owner", "writer", "reader", "freeBusyReader"
+    let primary: Bool?
+    let selected: Bool?
+}
+
 // MARK: - Google Calendar API Response DTOs
 
 /// Top-level response from GET /calendars/{calendarId}/events

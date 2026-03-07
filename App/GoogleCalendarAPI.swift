@@ -15,6 +15,15 @@ final class GoogleCalendarAPI {
         self.session = session
     }
 
+    // MARK: - Calendar List
+
+    /// Fetches all calendars visible to the authenticated user.
+    func fetchCalendarList(accessToken: String) async throws -> [GCalCalendarListEntry] {
+        let url = URL(string: "\(baseURL)/users/me/calendarList")!
+        let response: GCalCalendarList = try await performRequest(url: url, accessToken: accessToken)
+        return response.items ?? []
+    }
+
     // MARK: - Full Sync
 
     /// Performs a full sync of events from the primary calendar.

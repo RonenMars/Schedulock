@@ -7,6 +7,7 @@ final class CalendarSyncStore {
 
     private let defaults: UserDefaults
     private let syncTokenKey = "googleCalendar.syncToken"
+    private let syncTokensKey = "googleCalendar.syncTokens"
     private let lastSyncKey = "googleCalendar.lastSyncDate"
 
     private let eventsFileURL: URL
@@ -37,6 +38,22 @@ final class CalendarSyncStore {
     var syncToken: String? {
         get { defaults.string(forKey: syncTokenKey) }
         set { defaults.set(newValue, forKey: syncTokenKey) }
+    }
+
+    /// Per-calendar sync tokens for multi-calendar sync.
+    func syncToken(for calendarId: String) -> String? {
+        let tokens = defaults.dictionary(forKey: syncTokensKey) as? [String: String] ?? [:]
+        return tokens[calendarId]
+    }
+
+    func setSyncToken(_ token: String?, for calendarId: String) {
+        var tokens = defaults.dictionary(forKey: syncTokensKey) as? [String: String] ?? [:]
+        tokens[calendarId] = token
+        defaults.set(tokens, forKey: syncTokensKey)
+    }
+
+    func clearAllSyncTokens() {
+        defaults.removeObject(forKey: syncTokensKey)
     }
 
     var lastSyncDate: Date? {
@@ -93,6 +110,7 @@ final class CalendarSyncStore {
     /// Wipes all cached data. Called before a full re-sync (e.g., after 410 Gone).
     func clearAll() {
         syncToken = nil
+        clearAllSyncTokens()
         lastSyncDate = nil
         try? FileManager.default.removeItem(at: eventsFileURL)
         print("[CalendarSyncStore] Cleared all sync data")

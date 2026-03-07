@@ -21,6 +21,14 @@ final class GoogleCalendarViewModel {
     /// Today's Google Calendar events, ready for rendering.
     var todayEvents: [CalendarEvent] = []
 
+    /// All calendars in the user's Google account.
+    var availableCalendars: [GCalCalendarListEntry] = []
+
+    /// Calendar IDs the user has enabled for display.
+    var enabledGoogleCalendarIDs: Set<String> = []
+
+    private static let enabledCalendarIDsKey = "enabledGoogleCalendarIDs"
+
     // MARK: - Initialization
 
     /// Restores previous sign-in and loads cached events.
@@ -38,8 +46,9 @@ final class GoogleCalendarViewModel {
             lastSyncDate = syncService.store.lastSyncDate
         }
 
-        // If signed in, trigger a sync
+        // If signed in, fetch calendar list and trigger a sync
         if restored {
+            await fetchCalendarList()
             await performSync()
         }
     }
@@ -56,6 +65,7 @@ final class GoogleCalendarViewModel {
         do {
             try await auth.signIn(presenting: rootVC)
             await MainActor.run { updateAuthState() }
+            await fetchCalendarList()
             await performSync()
         } catch {
             await MainActor.run {
@@ -88,7 +98,8 @@ final class GoogleCalendarViewModel {
         }
 
         do {
-            let count = try await syncService.sync(ignoresFreshnessGuard: ignoresFreshnessGuard)
+            let calendarIds = enabledGoogleCalendarIDs.isEmpty ? nil : Array(enabledGoogleCalendarIDs)
+            let count = try await syncService.sync(calendarIds: calendarIds, ignoresFreshnessGuard: ignoresFreshnessGuard)
             await MainActor.run {
                 cachedEventCount = count
                 todayEvents = syncService.store.todayEvents()
@@ -111,7 +122,8 @@ final class GoogleCalendarViewModel {
         }
 
         do {
-            let count = try await syncService.forceFullSync()
+            let calendarIds = enabledGoogleCalendarIDs.isEmpty ? nil : Array(enabledGoogleCalendarIDs)
+            let count = try await syncService.forceFullSync(calendarIds: calendarIds)
             await MainActor.run {
                 cachedEventCount = count
                 todayEvents = syncService.store.todayEvents()
@@ -124,6 +136,46 @@ final class GoogleCalendarViewModel {
                 isSyncing = false
             }
         }
+    }
+
+    // MARK: - Calendar List
+
+    /// Fetches the list of calendars from the Google account.
+    func fetchCalendarList() async {
+        guard auth.isSignedIn else { return }
+        do {
+            let accessToken = try await auth.validAccessToken()
+            let api = GoogleCalendarAPI()
+            let calendars = try await api.fetchCalendarList(accessToken: accessToken)
+            await MainActor.run {
+                availableCalendars = calendars
+                // If no previous selection, enable all by default
+                let saved = loadEnabledCalendarIDs()
+                if saved.isEmpty {
+                    enabledGoogleCalendarIDs = Set(calendars.map { $0.id })
+                } else {
+                    enabledGoogleCalendarIDs = saved
+                }
+            }
+        } catch {
+            await MainActor.run {
+                errorMessage = error.localizedDescription
+            }
+        }
+    }
+
+    /// Persists the user's calendar selection to UserDefaults.
+    func saveEnabledCalendarIDs() {
+        let idsArray = Array(enabledGoogleCalendarIDs)
+        AppGroupManager.userDefaults.set(idsArray, forKey: Self.enabledCalendarIDsKey)
+    }
+
+    /// Loads previously saved calendar selection from UserDefaults.
+    private func loadEnabledCalendarIDs() -> Set<String> {
+        guard let ids = AppGroupManager.userDefaults.stringArray(forKey: Self.enabledCalendarIDsKey) else {
+            return []
+        }
+        return Set(ids)
     }
 
     // MARK: - Private

@@ -320,7 +320,7 @@ struct OnboardingView: View {
                 if selectedImage != nil {
                     // Image selected: Continue as primary, Change Image as secondary
                     Button {
-                        advanceTo(selectedCalendarSource == .google ? 5 : 4)
+                        advanceTo(4)
                     } label: {
                         Text("Continue")
                             .font(.headline)
@@ -355,7 +355,7 @@ struct OnboardingView: View {
                     }
 
                     Button {
-                        advanceTo(selectedCalendarSource == .google ? 5 : 4)
+                        advanceTo(4)
                     } label: {
                         Text("Skip for gradient background")
                             .font(.subheadline)
@@ -393,7 +393,21 @@ struct OnboardingView: View {
                     .font(.system(size: 28, weight: .bold))
                     .foregroundColor(DesignTokens.textPrimary)
 
-                if !calendarAccessGranted || availableCalendars.isEmpty {
+                if selectedCalendarSource == .google {
+                    if googleCalendarVM.availableCalendars.isEmpty {
+                        Text("Loading your Google calendars...")
+                            .font(.system(size: 16))
+                            .foregroundColor(DesignTokens.textMuted)
+                            .multilineTextAlignment(.center)
+                            .padding(.horizontal)
+                    } else {
+                        Text("Choose which calendars to show on your wallpaper")
+                            .font(.system(size: 16))
+                            .foregroundColor(DesignTokens.textMuted)
+                            .multilineTextAlignment(.center)
+                            .padding(.horizontal)
+                    }
+                } else if !calendarAccessGranted || availableCalendars.isEmpty {
                     VStack(spacing: DesignTokens.spacingMD) {
                         Text("Calendar access not granted. Sample events will be shown until you grant access.")
                             .font(.system(size: 16))
@@ -422,56 +436,10 @@ struct OnboardingView: View {
             }
             .padding(.top, DesignTokens.spacingXL)
 
-            if calendarAccessGranted && !availableCalendars.isEmpty {
-                let allSelected = enabledCalendarIDs.count == availableCalendars.count
-
-                HStack {
-                    Button(allSelected ? "Deselect All" : "Select All") {
-                        if allSelected {
-                            enabledCalendarIDs = []
-                        } else {
-                            enabledCalendarIDs = Set(availableCalendars.map { $0.calendarIdentifier })
-                        }
-                    }
-                    .font(.subheadline)
-                    .foregroundColor(DesignTokens.primary)
-                    Spacer()
-                }
-                .padding(.horizontal)
-
-                ScrollView {
-                    VStack(spacing: DesignTokens.spacingSM) {
-                        ForEach(availableCalendars, id: \.calendarIdentifier) { calendar in
-                            HStack {
-                                Circle()
-                                    .fill(Color(cgColor: calendar.cgColor))
-                                    .frame(width: 12, height: 12)
-
-                                Text(calendar.title)
-                                    .font(.system(size: 16))
-                                    .foregroundColor(DesignTokens.textPrimary)
-
-                                Spacer()
-
-                                Toggle("", isOn: Binding(
-                                    get: { enabledCalendarIDs.contains(calendar.calendarIdentifier) },
-                                    set: { isOn in
-                                        if isOn {
-                                            enabledCalendarIDs.insert(calendar.calendarIdentifier)
-                                        } else {
-                                            enabledCalendarIDs.remove(calendar.calendarIdentifier)
-                                        }
-                                    }
-                                ))
-                                .tint(DesignTokens.primary)
-                            }
-                            .padding()
-                            .background(DesignTokens.surface)
-                            .cornerRadius(DesignTokens.cardRadius)
-                        }
-                    }
-                    .padding(.horizontal)
-                }
+            if selectedCalendarSource == .google && !googleCalendarVM.availableCalendars.isEmpty {
+                googleCalendarListView
+            } else if selectedCalendarSource == .apple && calendarAccessGranted && !availableCalendars.isEmpty {
+                appleCalendarListView
             } else {
                 Spacer()
             }
@@ -490,6 +458,118 @@ struct OnboardingView: View {
             }
             .padding(.horizontal, DesignTokens.spacingXL)
             .padding(.bottom, 50)
+        }
+    }
+
+    // MARK: - Apple Calendar List
+
+    private var appleCalendarListView: some View {
+        Group {
+            let allSelected = enabledCalendarIDs.count == availableCalendars.count
+
+            HStack {
+                Button(allSelected ? "Deselect All" : "Select All") {
+                    if allSelected {
+                        enabledCalendarIDs = []
+                    } else {
+                        enabledCalendarIDs = Set(availableCalendars.map { $0.calendarIdentifier })
+                    }
+                }
+                .font(.subheadline)
+                .foregroundColor(DesignTokens.primary)
+                Spacer()
+            }
+            .padding(.horizontal)
+
+            ScrollView {
+                VStack(spacing: DesignTokens.spacingSM) {
+                    ForEach(availableCalendars, id: \.calendarIdentifier) { calendar in
+                        HStack {
+                            Circle()
+                                .fill(Color(cgColor: calendar.cgColor))
+                                .frame(width: 12, height: 12)
+
+                            Text(calendar.title)
+                                .font(.system(size: 16))
+                                .foregroundColor(DesignTokens.textPrimary)
+
+                            Spacer()
+
+                            Toggle("", isOn: Binding(
+                                get: { enabledCalendarIDs.contains(calendar.calendarIdentifier) },
+                                set: { isOn in
+                                    if isOn {
+                                        enabledCalendarIDs.insert(calendar.calendarIdentifier)
+                                    } else {
+                                        enabledCalendarIDs.remove(calendar.calendarIdentifier)
+                                    }
+                                }
+                            ))
+                            .tint(DesignTokens.primary)
+                        }
+                        .padding()
+                        .background(DesignTokens.surface)
+                        .cornerRadius(DesignTokens.cardRadius)
+                    }
+                }
+                .padding(.horizontal)
+            }
+        }
+    }
+
+    // MARK: - Google Calendar List
+
+    private var googleCalendarListView: some View {
+        Group {
+            let allSelected = googleCalendarVM.enabledGoogleCalendarIDs.count == googleCalendarVM.availableCalendars.count
+
+            HStack {
+                Button(allSelected ? "Deselect All" : "Select All") {
+                    if allSelected {
+                        googleCalendarVM.enabledGoogleCalendarIDs = []
+                    } else {
+                        googleCalendarVM.enabledGoogleCalendarIDs = Set(googleCalendarVM.availableCalendars.map { $0.id })
+                    }
+                }
+                .font(.subheadline)
+                .foregroundColor(DesignTokens.primary)
+                Spacer()
+            }
+            .padding(.horizontal)
+
+            ScrollView {
+                VStack(spacing: DesignTokens.spacingSM) {
+                    ForEach(googleCalendarVM.availableCalendars) { calendar in
+                        HStack {
+                            Circle()
+                                .fill(Color(uiColor: ColorUtils.color(from: calendar.backgroundColor ?? "#4285F4")))
+                                .frame(width: 12, height: 12)
+
+                            Text(calendar.summary ?? calendar.id)
+                                .font(.system(size: 16))
+                                .foregroundColor(DesignTokens.textPrimary)
+
+                            Spacer()
+
+                            Toggle("", isOn: Binding(
+                                get: { googleCalendarVM.enabledGoogleCalendarIDs.contains(calendar.id) },
+                                set: { isOn in
+                                    if isOn {
+                                        googleCalendarVM.enabledGoogleCalendarIDs.insert(calendar.id)
+                                    } else {
+                                        googleCalendarVM.enabledGoogleCalendarIDs.remove(calendar.id)
+                                    }
+                                }
+                            ))
+                            .tint(DesignTokens.primary)
+                        }
+                        .padding()
+                        .background(DesignTokens.surface)
+                        .cornerRadius(DesignTokens.cardRadius)
+                    }
+                }
+                .padding(.horizontal)
+            }
         }
     }
 
@@ -728,8 +808,12 @@ struct OnboardingView: View {
     }
 
     private func saveCalendarSelections() {
-        let idsArray = Array(enabledCalendarIDs)
-        AppGroupManager.userDefaults.set(idsArray, forKey: "enabledCalendarIDs")
+        if selectedCalendarSource == .google {
+            googleCalendarVM.saveEnabledCalendarIDs()
+        } else {
+            let idsArray = Array(enabledCalendarIDs)
+            AppGroupManager.userDefaults.set(idsArray, forKey: "enabledCalendarIDs")
+        }
     }
 
     private func saveTemplateSelection() {

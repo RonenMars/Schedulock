@@ -36,10 +36,11 @@ final class CalendarSyncService {
     /// (within `minSyncInterval`); use `forceFullSync()` or pass
     /// `ignoresFreshnessGuard: true` to bypass.
     ///
+    /// - Parameter calendarIds: Google Calendar IDs to sync. Pass `nil` to sync only the primary calendar.
     /// - Returns: The number of events in the local cache after sync.
     /// - Throws: Auth or network errors.
     @discardableResult
-    func sync(ignoresFreshnessGuard: Bool = false) async throws -> Int {
+    func sync(calendarIds: [String]? = nil, ignoresFreshnessGuard: Bool = false) async throws -> Int {
         guard auth.isSignedIn else {
             throw CalendarSyncError.notSignedIn
         }
@@ -59,17 +60,34 @@ final class CalendarSyncService {
         defer { isSyncing = false }
 
         let accessToken = try await auth.validAccessToken()
+        let ids = calendarIds ?? ["primary"]
 
-        if let syncToken = store.syncToken {
-            return try await performIncrementalSync(accessToken: accessToken, syncToken: syncToken)
-        } else {
-            return try await performFullSync(accessToken: accessToken)
+        // Sync each calendar individually
+        for calendarId in ids {
+            if let syncToken = store.syncToken(for: calendarId) {
+                try await performIncrementalSync(accessToken: accessToken, syncToken: syncToken, calendarId: calendarId)
+            } else {
+                try await performFullSync(accessToken: accessToken, calendarId: calendarId)
+            }
         }
+
+        // Remove events from calendars no longer selected
+        let selectedSet = Set(ids)
+        let allEvents = store.loadEvents()
+        let filtered = allEvents.filter { selectedSet.contains($0.calendarId) }
+        if filtered.count != allEvents.count {
+            store.replaceAllEvents(filtered)
+        }
+
+        store.lastSyncDate = Date()
+        let totalEvents = store.loadEvents().count
+        print("[CalendarSync] Multi-calendar sync complete: \(totalEvents) events cached")
+        return totalEvents
     }
 
     /// Forces a full re-sync, clearing all cached data first.
     @discardableResult
-    func forceFullSync() async throws -> Int {
+    func forceFullSync(calendarIds: [String]? = nil) async throws -> Int {
         guard auth.isSignedIn else {
             throw CalendarSyncError.notSignedIn
         }
@@ -79,56 +97,62 @@ final class CalendarSyncService {
 
         store.clearAll()
         let accessToken = try await auth.validAccessToken()
-        return try await performFullSync(accessToken: accessToken)
+        let ids = calendarIds ?? ["primary"]
+
+        for calendarId in ids {
+            try await performFullSync(accessToken: accessToken, calendarId: calendarId)
+        }
+
+        let totalEvents = store.loadEvents().count
+        return totalEvents
     }
 
     // MARK: - Private
 
-    private func performFullSync(accessToken: String) async throws -> Int {
-        print("[CalendarSync] Starting full sync...")
+    private func performFullSync(accessToken: String, calendarId: String = "primary") async throws {
+        print("[CalendarSync] Starting full sync for calendar: \(calendarId)...")
 
-        let result = try await api.fullSync(accessToken: accessToken)
+        let result = try await api.fullSync(accessToken: accessToken, calendarId: calendarId)
 
-        let localEvents = result.events.compactMap { $0.toLocalEvent(calendarId: "primary") }
+        let localEvents = result.events.compactMap { $0.toLocalEvent(calendarId: calendarId) }
             .filter { !$0.isCancelled }
 
-        store.replaceAllEvents(localEvents)
-        store.syncToken = result.syncToken
-        store.lastSyncDate = Date()
+        // Merge with existing events from other calendars
+        let existingEvents = store.loadEvents().filter { $0.calendarId != calendarId }
+        store.replaceAllEvents(existingEvents + localEvents)
+        store.setSyncToken(result.syncToken, for: calendarId)
 
-        print("[CalendarSync] Full sync complete: \(localEvents.count) events cached")
-        return localEvents.count
+        print("[CalendarSync] Full sync complete for \(calendarId): \(localEvents.count) events")
     }
 
-    private func performIncrementalSync(accessToken: String, syncToken: String) async throws -> Int {
-        print("[CalendarSync] Starting incremental sync...")
+    private func performIncrementalSync(accessToken: String, syncToken: String, calendarId: String = "primary") async throws {
+        print("[CalendarSync] Starting incremental sync for calendar: \(calendarId)...")
 
         do {
             let result = try await api.incrementalSync(
                 accessToken: accessToken,
-                syncToken: syncToken
+                syncToken: syncToken,
+                calendarId: calendarId
             )
 
-            let changedEvents = result.events.compactMap { $0.toLocalEvent(calendarId: "primary") }
+            let changedEvents = result.events.compactMap { $0.toLocalEvent(calendarId: calendarId) }
 
             if !changedEvents.isEmpty {
                 store.applyIncrementalChanges(changedEvents)
-                print("[CalendarSync] Applied \(changedEvents.count) changes")
+                print("[CalendarSync] Applied \(changedEvents.count) changes for \(calendarId)")
             } else {
-                print("[CalendarSync] No changes since last sync")
+                print("[CalendarSync] No changes since last sync for \(calendarId)")
             }
 
-            store.syncToken = result.syncToken
-            store.lastSyncDate = Date()
-
-            let totalEvents = store.loadEvents().count
-            return totalEvents
+            store.setSyncToken(result.syncToken, for: calendarId)
 
         } catch GoogleCalendarAPIError.syncTokenExpired {
-            // 410 Gone — token expired. Wipe cache and re-full-sync.
-            print("[CalendarSync] Sync token expired (410 Gone). Re-running full sync...")
-            store.clearAll()
-            return try await performFullSync(accessToken: accessToken)
+            // 410 Gone — token expired. Wipe this calendar's events and re-full-sync.
+            print("[CalendarSync] Sync token expired for \(calendarId). Re-running full sync...")
+            store.setSyncToken(nil, for: calendarId)
+            let existingEvents = store.loadEvents().filter { $0.calendarId != calendarId }
+            store.replaceAllEvents(existingEvents)
+            try await performFullSync(accessToken: accessToken, calendarId: calendarId)
         }
     }
 }

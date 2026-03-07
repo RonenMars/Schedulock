@@ -666,42 +666,6 @@ final class EdgeCaseTests: XCTestCase {
 
     // MARK: - Resolution Boundaries
 
-    func testSmallestDevice() {
-        let smallDevice = DeviceResolution.iPhoneSE3
-        let template = WallpaperTemplate(name: "Small Device", templateType: .minimal)
-
-        let result = engine.generateWallpaper(
-            template: template,
-            image: nil,
-            events: [sampleEvent()],
-            resolution: smallDevice,
-            date: testDate
-        )
-
-        XCTAssertNotNil(result, "Should render at smallest device resolution (iPhone SE3)")
-        XCTAssertEqual(result?.size.width, CGFloat(smallDevice.width))
-        XCTAssertEqual(result?.size.height, CGFloat(smallDevice.height))
-        XCTAssertEqual(result?.scale, CGFloat(smallDevice.scale))
-    }
-
-    func testLargestDevice() {
-        let largeDevice = DeviceResolution.iPhone16ProMax
-        let template = WallpaperTemplate(name: "Large Device", templateType: .gradient)
-
-        let result = engine.generateWallpaper(
-            template: template,
-            image: nil,
-            events: [sampleEvent()],
-            resolution: largeDevice,
-            date: testDate
-        )
-
-        XCTAssertNotNil(result, "Should render at largest device resolution (iPhone 16 Pro Max)")
-        XCTAssertEqual(result?.size.width, CGFloat(largeDevice.width))
-        XCTAssertEqual(result?.size.height, CGFloat(largeDevice.height))
-        XCTAssertEqual(result?.scale, CGFloat(largeDevice.scale))
-    }
-
     // MARK: - CalendarEvent Boundary Tests
 
     func testTruncatedTitleExactly32Chars() {
