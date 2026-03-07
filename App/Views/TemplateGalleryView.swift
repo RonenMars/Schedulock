@@ -4,7 +4,7 @@ import Shared
 
 struct TemplateGalleryView: View {
     @Binding var selectedTab: Int
-    @State private var viewModel = WallpaperViewModel()
+    let viewModel: WallpaperViewModel
     @State private var navPath: [TemplateType] = []
     @Query private var allSavedSettings: [SavedTemplateSettings]
 
@@ -27,10 +27,7 @@ struct TemplateGalleryView: View {
                         ForEach(TemplateType.allCases, id: \.self) { template in
                             TemplateCard(
                                 template: template,
-                                preview: viewModel.generatePreview(
-                                    templateType: template,
-                                    settings: savedDesignSettings(for: template)
-                                ),
+                                preview: viewModel.cachedPreviews[template],
                                 isSelected: template.rawValue == defaultTemplateTypeRawValue
                             )
                             .onTapGesture {
@@ -44,7 +41,12 @@ struct TemplateGalleryView: View {
             }
             .navigationTitle("Templates")
             .toolbarColorScheme(.dark, for: .navigationBar)
-            .onAppear { loadSavedBackgroundImage() }
+            .task(id: viewModel.backgroundImageVersion) {
+                // Skip if ContentView already pre-warmed previews for this background version
+                guard viewModel.previewsVersion != viewModel.backgroundImageVersion else { return }
+                let settingsMap = Dictionary(uniqueKeysWithValues: TemplateType.allCases.map { ($0, savedDesignSettings(for: $0)) })
+                await viewModel.warmPreviews(settingsMap: settingsMap)
+            }
             .navigationDestination(for: TemplateType.self) { template in
                 TemplateEditorView(templateType: template, viewModel: viewModel, selectedTab: $selectedTab)
             }
@@ -55,14 +57,6 @@ struct TemplateGalleryView: View {
 
     private func savedDesignSettings(for type: TemplateType) -> DesignSettings {
         allSavedSettings.first { $0.templateTypeRaw == type.rawValue }?.asDesignSettings ?? .default
-    }
-
-    private func loadSavedBackgroundImage() {
-        if let imagePath = AppGroupManager.userDefaults.string(forKey: "selectedBackgroundImagePath"),
-           let imageData = try? Data(contentsOf: URL(fileURLWithPath: imagePath)),
-           let bgImage = UIImage(data: imageData) {
-            viewModel.backgroundImage = bgImage
-        }
     }
 
     private func lightHaptic() {

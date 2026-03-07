@@ -9,7 +9,18 @@ struct TemplateEditorView: View {
     @State private var settings: DesignSettings = .default
     @State private var showFinalPreview = false
     @State private var isApproving = false
+    @State private var showCameraRollAlert = false
     @State private var calendarProvider = CalendarDataProvider()
+    @State private var previewEvents: [CalendarEvent] = WallpaperViewModel.sampleEvents
+
+    @AppStorage("showDeclined", store: AppGroupManager.userDefaults)
+    private var showDeclined: Bool = false
+
+    @AppStorage("maxEvents", store: AppGroupManager.userDefaults)
+    private var maxEvents: Int = 6
+
+    @AppStorage("calendarSource", store: AppGroupManager.userDefaults)
+    private var calendarSourceRaw: String = CalendarSourceType.apple.rawValue
 
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var modelContext
@@ -35,6 +46,7 @@ struct TemplateEditorView: View {
 
             // Sticky eye button — bottom-right corner
             Button {
+                previewEvents = fetchEvents()
                 showFinalPreview = true
             } label: {
                 Image(systemName: "eye")
@@ -55,6 +67,7 @@ struct TemplateEditorView: View {
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button {
+                    previewEvents = fetchEvents()
                     showFinalPreview = true
                 } label: {
                     if defaultTemplateTypeRawValue == templateType.rawValue {
@@ -69,6 +82,36 @@ struct TemplateEditorView: View {
         }
         .fullScreenCover(isPresented: $showFinalPreview) {
             finalPreviewCover
+                .alert("Save to Camera Roll?", isPresented: $showCameraRollAlert) {
+                    Button("Save to Camera Roll") {
+                        Task {
+                            isApproving = true
+                            await Task.yield()
+                            approveTemplate()
+                            if let wallpaper = viewModel.currentWallpaper {
+                                UIImageWriteToSavedPhotosAlbum(wallpaper, nil, nil, nil)
+                            }
+                            isApproving = false
+                            showFinalPreview = false
+                            selectedTab = 0
+                            dismiss()
+                        }
+                    }
+                    Button("Skip", role: .cancel) {
+                        Task {
+                            isApproving = true
+                            await Task.yield()
+                            approveTemplate()
+                            calendarProvider.resetAndRefresh()
+                            isApproving = false
+                            showFinalPreview = false
+                            selectedTab = 0
+                            dismiss()
+                        }
+                    }
+                } message: {
+                    Text("Would you like to save the wallpaper to your Photos library?")
+                }
         }
     }
 
@@ -104,7 +147,7 @@ struct TemplateEditorView: View {
 
                     VStack(spacing: gap) {
                         Group {
-                            if let preview = viewModel.generatePreview(templateType: templateType, settings: settings) {
+                            if let preview = viewModel.generatePreview(templateType: templateType, settings: settings, events: previewEvents) {
                                 Image(uiImage: preview)
                                     .resizable()
                                     .aspectRatio(9/19.5, contentMode: .fit)
@@ -136,15 +179,7 @@ struct TemplateEditorView: View {
 
                             // Save
                             Button {
-                                Task {
-                                    isApproving = true
-                                    await Task.yield()
-                                    approveTemplate()
-                                    isApproving = false
-                                    showFinalPreview = false
-                                    selectedTab = 0
-                                    dismiss()
-                                }
+                                showCameraRollAlert = true
                             } label: {
                                 Group {
                                     if isApproving {
@@ -256,6 +291,26 @@ struct TemplateEditorView: View {
 
     // MARK: - Helpers
 
+    private func fetchEvents() -> [CalendarEvent] {
+        let source = CalendarSourceType(rawValue: calendarSourceRaw) ?? .apple
+        switch source {
+        case .apple:
+            let enabledIDs = AppGroupManager.userDefaults.stringArray(forKey: "enabledCalendarIDs") ?? []
+            guard CalendarDataProvider.authorizationStatus == .fullAccess else {
+                return WallpaperViewModel.sampleEvents
+            }
+            calendarProvider.resetAndRefresh()
+            return calendarProvider.fetchTodayEvents(
+                from: enabledIDs,
+                excludeDeclined: !showDeclined,
+                maxEvents: maxEvents
+            )
+        case .google:
+            let googleEvents = CalendarSyncService.shared.store.todayEvents(maxEvents: maxEvents)
+            return googleEvents.isEmpty ? WallpaperViewModel.sampleEvents : googleEvents
+        }
+    }
+
     private func loadSavedSettings() {
         let raw = templateType.rawValue
         let descriptor = FetchDescriptor<SavedTemplateSettings>(
@@ -274,13 +329,7 @@ struct TemplateEditorView: View {
         viewModel.selectedTemplateType = templateType
         viewModel.designSettings = settings
 
-        let enabledIDs = AppGroupManager.userDefaults.stringArray(forKey: "enabledCalendarIDs") ?? []
-        let events: [CalendarEvent]
-        if CalendarDataProvider.authorizationStatus == .fullAccess {
-            events = calendarProvider.fetchTodayEvents(from: enabledIDs, excludeDeclined: true, maxEvents: 6)
-        } else {
-            events = WallpaperViewModel.sampleEvents
-        }
+        let events = fetchEvents()
 
         AppGroupManager.ensureDirectoriesExist()
         guard let wallpaper = viewModel.generateFullResolution(events: events, resolution: .iPhone16Pro) else { return }
