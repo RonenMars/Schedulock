@@ -23,81 +23,61 @@ final class GoogleCalendarAPITests: XCTestCase {
         super.tearDown()
     }
 
-    // MARK: - Full Sync Request Construction
+    // MARK: - Fetch Events Request Construction
 
-    func testFullSyncUsesCorrectEndpoint() async throws {
+    func testFetchEventsUsesCorrectEndpoint() async throws {
         var capturedURL: URL?
 
-        stubSinglePageResponse(events: [], syncToken: "tok1") { request in
+        stubSinglePageResponse(events: []) { request in
             capturedURL = request.url
         }
 
-        _ = try await api.fullSync(accessToken: "test_token")
+        _ = try await api.fetchEvents(accessToken: "test_token")
 
         let components = URLComponents(url: capturedURL!, resolvingAgainstBaseURL: false)!
         XCTAssertTrue(components.path.hasSuffix("/calendars/primary/events"))
     }
 
-    func testFullSyncIncludesSingleEvents() async throws {
+    func testFetchEventsIncludesSingleEvents() async throws {
         var capturedURL: URL?
 
-        stubSinglePageResponse(events: [], syncToken: "tok1") { request in
+        stubSinglePageResponse(events: []) { request in
             capturedURL = request.url
         }
 
-        _ = try await api.fullSync(accessToken: "test_token")
+        _ = try await api.fetchEvents(accessToken: "test_token")
 
         let query = queryItems(from: capturedURL!)
         XCTAssertEqual(query["singleEvents"], "true")
     }
 
-    func testFullSyncIncludesShowDeleted() async throws {
+    func testFetchEventsIncludesShowDeleted() async throws {
         var capturedURL: URL?
 
-        stubSinglePageResponse(events: [], syncToken: "tok1") { request in
+        stubSinglePageResponse(events: []) { request in
             capturedURL = request.url
         }
 
-        _ = try await api.fullSync(accessToken: "test_token")
+        _ = try await api.fetchEvents(accessToken: "test_token")
 
         let query = queryItems(from: capturedURL!)
         XCTAssertEqual(query["showDeleted"], "true")
     }
 
-    func testFullSyncIncludesTimeMin() async throws {
+    func testFetchEventsIncludesTimeMin() async throws {
         var capturedURL: URL?
 
-        stubSinglePageResponse(events: [], syncToken: "tok1") { request in
+        stubSinglePageResponse(events: []) { request in
             capturedURL = request.url
         }
 
-        _ = try await api.fullSync(accessToken: "test_token")
+        _ = try await api.fetchEvents(accessToken: "test_token")
 
         let query = queryItems(from: capturedURL!)
-        XCTAssertNotNil(query["timeMin"], "Full sync should include timeMin")
+        XCTAssertNotNil(query["timeMin"], "Should include timeMin")
     }
 
-    func testFullSyncDoesNotIncludeSyncToken() async throws {
-        var capturedURL: URL?
-
-        stubSinglePageResponse(events: [], syncToken: "tok1") { request in
-            capturedURL = request.url
-        }
-
-        _ = try await api.fullSync(accessToken: "test_token")
-
-        let query = queryItems(from: capturedURL!)
-        XCTAssertNil(query["syncToken"], "Full sync must not include syncToken")
-    }
-
-    func testFullSyncReturnsSyncToken() async throws {
-        stubSinglePageResponse(events: [], syncToken: "final_token")
-
-        let result = try await api.fullSync(accessToken: "test_token")
-        XCTAssertEqual(result.syncToken, "final_token")
-    }
-
-    func testFullSyncReturnsDecodedEvents() async throws {
+    func testFetchEventsReturnsDecodedEvents() async throws {
         let eventsJSON = """
         [
             {
@@ -109,17 +89,17 @@ final class GoogleCalendarAPITests: XCTestCase {
             }
         ]
         """
-        stubSinglePageResponse(syncToken: "tok", itemsJSON: eventsJSON)
+        stubSinglePageResponse(itemsJSON: eventsJSON)
 
-        let result = try await api.fullSync(accessToken: "test_token")
-        XCTAssertEqual(result.events.count, 1)
-        XCTAssertEqual(result.events.first?.id, "e1")
-        XCTAssertEqual(result.events.first?.summary, "Meeting")
+        let events = try await api.fetchEvents(accessToken: "test_token")
+        XCTAssertEqual(events.count, 1)
+        XCTAssertEqual(events.first?.id, "e1")
+        XCTAssertEqual(events.first?.summary, "Meeting")
     }
 
-    // MARK: - Full Sync Pagination
+    // MARK: - Pagination
 
-    func testFullSyncPaginates() async throws {
+    func testFetchEventsPaginates() async throws {
         var callCount = 0
 
         MockURLProtocol.requestHandler = { request in
@@ -139,7 +119,6 @@ final class GoogleCalendarAPITests: XCTestCase {
                 json = """
                 {
                     "kind": "calendar#events",
-                    "nextSyncToken": "final_sync_token",
                     "items": [{ "id": "e2", "status": "confirmed", "summary": "Second",
                                "start": {"dateTime":"2024-03-15T12:00:00Z"},
                                "end": {"dateTime":"2024-03-15T13:00:00Z"} }]
@@ -151,42 +130,10 @@ final class GoogleCalendarAPITests: XCTestCase {
             return (response, data)
         }
 
-        let result = try await api.fullSync(accessToken: "test_token")
+        let events = try await api.fetchEvents(accessToken: "test_token")
 
         XCTAssertEqual(callCount, 2, "Should make 2 requests for 2 pages")
-        XCTAssertEqual(result.events.count, 2)
-        XCTAssertEqual(result.syncToken, "final_sync_token")
-    }
-
-    // MARK: - Incremental Sync Request Construction
-
-    func testIncrementalSyncIncludesSyncToken() async throws {
-        var capturedURL: URL?
-
-        stubSinglePageResponse(events: [], syncToken: "new_tok") { request in
-            capturedURL = request.url
-        }
-
-        _ = try await api.incrementalSync(accessToken: "tok", syncToken: "old_sync_token")
-
-        let query = queryItems(from: capturedURL!)
-        XCTAssertEqual(query["syncToken"], "old_sync_token")
-    }
-
-    func testIncrementalSyncDoesNotIncludeFilters() async throws {
-        var capturedURL: URL?
-
-        stubSinglePageResponse(events: [], syncToken: "new_tok") { request in
-            capturedURL = request.url
-        }
-
-        _ = try await api.incrementalSync(accessToken: "tok", syncToken: "sync123")
-
-        let query = queryItems(from: capturedURL!)
-        XCTAssertNil(query["singleEvents"], "Incremental sync must not include singleEvents")
-        XCTAssertNil(query["timeMin"], "Incremental sync must not include timeMin")
-        XCTAssertNil(query["orderBy"], "Incremental sync must not include orderBy")
-        XCTAssertNil(query["showDeleted"], "Incremental sync must not include showDeleted")
+        XCTAssertEqual(events.count, 2)
     }
 
     // MARK: - Bearer Token
@@ -194,32 +141,16 @@ final class GoogleCalendarAPITests: XCTestCase {
     func testBearerTokenAttached() async throws {
         var capturedAuth: String?
 
-        stubSinglePageResponse(events: [], syncToken: "tok") { request in
+        stubSinglePageResponse(events: []) { request in
             capturedAuth = request.value(forHTTPHeaderField: "Authorization")
         }
 
-        _ = try await api.fullSync(accessToken: "my_access_token_123")
+        _ = try await api.fetchEvents(accessToken: "my_access_token_123")
 
         XCTAssertEqual(capturedAuth, "Bearer my_access_token_123")
     }
 
     // MARK: - Error Handling
-
-    func testHTTP410ThrowsSyncTokenExpired() async {
-        MockURLProtocol.requestHandler = { request in
-            let response = HTTPURLResponse(url: request.url!, statusCode: 410, httpVersion: nil, headerFields: nil)!
-            return (response, Data())
-        }
-
-        do {
-            _ = try await api.incrementalSync(accessToken: "tok", syncToken: "expired_token")
-            XCTFail("Should throw syncTokenExpired")
-        } catch GoogleCalendarAPIError.syncTokenExpired {
-            // Expected
-        } catch {
-            XCTFail("Wrong error type: \(error)")
-        }
-    }
 
     func testHTTP401ThrowsUnauthorized() async {
         MockURLProtocol.requestHandler = { request in
@@ -228,7 +159,7 @@ final class GoogleCalendarAPITests: XCTestCase {
         }
 
         do {
-            _ = try await api.fullSync(accessToken: "bad_token")
+            _ = try await api.fetchEvents(accessToken: "bad_token")
             XCTFail("Should throw unauthorized")
         } catch GoogleCalendarAPIError.unauthorized {
             // Expected
@@ -244,7 +175,7 @@ final class GoogleCalendarAPITests: XCTestCase {
         }
 
         do {
-            _ = try await api.fullSync(accessToken: "tok")
+            _ = try await api.fetchEvents(accessToken: "tok")
             XCTFail("Should throw httpError")
         } catch GoogleCalendarAPIError.httpError(let code, let body) {
             XCTAssertEqual(code, 500)
@@ -265,7 +196,6 @@ final class GoogleCalendarAPITests: XCTestCase {
 
     private func stubSinglePageResponse(
         events: [Any] = [],
-        syncToken: String,
         itemsJSON: String? = nil,
         inspector: ((URLRequest) -> Void)? = nil
     ) {
@@ -275,7 +205,6 @@ final class GoogleCalendarAPITests: XCTestCase {
             let json = """
             {
                 "kind": "calendar#events",
-                "nextSyncToken": "\(syncToken)",
                 "items": \(items)
             }
             """

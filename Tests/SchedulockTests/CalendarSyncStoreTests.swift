@@ -1,7 +1,7 @@
 import XCTest
 @testable import Schedulock
 
-/// Tests for CalendarSyncStore: event persistence, sync token, incremental changes, cache clearing.
+/// Tests for CalendarSyncStore: event persistence, cache clearing, today filtering.
 final class CalendarSyncStoreTests: XCTestCase {
 
     private var store: CalendarSyncStore!
@@ -21,26 +21,6 @@ final class CalendarSyncStoreTests: XCTestCase {
         defaults.removePersistentDomain(forName: defaults.description)
         try? FileManager.default.removeItem(at: tempDirectory)
         super.tearDown()
-    }
-
-    // MARK: - Sync Token
-
-    func testSyncTokenInitiallyNil() {
-        XCTAssertNil(store.syncToken)
-        XCTAssertFalse(store.hasCompletedFullSync)
-    }
-
-    func testSyncTokenPersistence() {
-        store.syncToken = "token_123"
-        XCTAssertEqual(store.syncToken, "token_123")
-        XCTAssertTrue(store.hasCompletedFullSync)
-    }
-
-    func testSyncTokenClearable() {
-        store.syncToken = "token_123"
-        store.syncToken = nil
-        XCTAssertNil(store.syncToken)
-        XCTAssertFalse(store.hasCompletedFullSync)
     }
 
     // MARK: - Last Sync Date
@@ -85,80 +65,14 @@ final class CalendarSyncStoreTests: XCTestCase {
         XCTAssertEqual(loaded.first?.id, "new")
     }
 
-    // MARK: - Incremental Changes
-
-    func testApplyIncrementalNewEvent() {
-        store.replaceAllEvents([makeEvent(id: "1", summary: "Existing")])
-
-        store.applyIncrementalChanges([makeEvent(id: "2", summary: "New Event")])
-
-        let loaded = store.loadEvents()
-        XCTAssertEqual(loaded.count, 2)
-    }
-
-    func testApplyIncrementalUpdateEvent() {
-        store.replaceAllEvents([makeEvent(id: "1", summary: "Original")])
-
-        store.applyIncrementalChanges([makeEvent(id: "1", summary: "Updated")])
-
-        let loaded = store.loadEvents()
-        XCTAssertEqual(loaded.count, 1)
-        XCTAssertEqual(loaded.first?.summary, "Updated")
-    }
-
-    func testApplyIncrementalCancelledEventRemoved() {
-        store.replaceAllEvents([
-            makeEvent(id: "1", summary: "Keep"),
-            makeEvent(id: "2", summary: "Remove"),
-        ])
-
-        let cancelled = GoogleCalendarEvent(
-            id: "2", summary: "", startDate: .distantPast, endDate: .distantPast,
-            isAllDay: false, location: nil, calendarId: "primary", status: "cancelled"
-        )
-        store.applyIncrementalChanges([cancelled])
-
-        let loaded = store.loadEvents()
-        XCTAssertEqual(loaded.count, 1)
-        XCTAssertEqual(loaded.first?.id, "1")
-    }
-
-    func testApplyIncrementalMixedChanges() {
-        store.replaceAllEvents([
-            makeEvent(id: "1", summary: "Keep Unchanged"),
-            makeEvent(id: "2", summary: "Will Update"),
-            makeEvent(id: "3", summary: "Will Cancel"),
-        ])
-
-        let changes = [
-            makeEvent(id: "2", summary: "Updated Title"),
-            GoogleCalendarEvent(
-                id: "3", summary: "", startDate: .distantPast, endDate: .distantPast,
-                isAllDay: false, location: nil, calendarId: "primary", status: "cancelled"
-            ),
-            makeEvent(id: "4", summary: "Brand New"),
-        ]
-
-        store.applyIncrementalChanges(changes)
-
-        let loaded = store.loadEvents()
-        XCTAssertEqual(loaded.count, 3) // 1 kept, 2 updated, 3 removed, 4 added
-        XCTAssertTrue(loaded.contains { $0.id == "1" && $0.summary == "Keep Unchanged" })
-        XCTAssertTrue(loaded.contains { $0.id == "2" && $0.summary == "Updated Title" })
-        XCTAssertFalse(loaded.contains { $0.id == "3" })
-        XCTAssertTrue(loaded.contains { $0.id == "4" })
-    }
-
     // MARK: - Clear All
 
     func testClearAllRemovesEverything() {
-        store.syncToken = "token_abc"
         store.lastSyncDate = Date()
         store.replaceAllEvents([makeEvent(id: "1", summary: "Event")])
 
         store.clearAll()
 
-        XCTAssertNil(store.syncToken)
         XCTAssertNil(store.lastSyncDate)
         XCTAssertTrue(store.loadEvents().isEmpty)
     }
