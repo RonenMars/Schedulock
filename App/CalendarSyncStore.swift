@@ -1,13 +1,11 @@
 import Foundation
 import Shared
 
-/// Persists Google Calendar sync state: cached events (JSON file) and sync token (UserDefaults).
+/// Persists Google Calendar sync state: cached events (JSON file) and last sync date (UserDefaults).
 /// Uses AppGroupManager for storage so widget extensions could read synced events if needed.
 final class CalendarSyncStore {
 
     private let defaults: UserDefaults
-    private let syncTokenKey = "googleCalendar.syncToken"
-    private let syncTokensKey = "googleCalendar.syncTokens"
     private let lastSyncKey = "googleCalendar.lastSyncDate"
 
     private let eventsFileURL: URL
@@ -33,37 +31,11 @@ final class CalendarSyncStore {
         return d
     }()
 
-    // MARK: - Sync Token
-
-    var syncToken: String? {
-        get { defaults.string(forKey: syncTokenKey) }
-        set { defaults.set(newValue, forKey: syncTokenKey) }
-    }
-
-    /// Per-calendar sync tokens for multi-calendar sync.
-    func syncToken(for calendarId: String) -> String? {
-        let tokens = defaults.dictionary(forKey: syncTokensKey) as? [String: String] ?? [:]
-        return tokens[calendarId]
-    }
-
-    func setSyncToken(_ token: String?, for calendarId: String) {
-        var tokens = defaults.dictionary(forKey: syncTokensKey) as? [String: String] ?? [:]
-        tokens[calendarId] = token
-        defaults.set(tokens, forKey: syncTokensKey)
-    }
-
-    func clearAllSyncTokens() {
-        defaults.removeObject(forKey: syncTokensKey)
-    }
+    // MARK: - Sync State
 
     var lastSyncDate: Date? {
         get { defaults.object(forKey: lastSyncKey) as? Date }
         set { defaults.set(newValue, forKey: lastSyncKey) }
-    }
-
-    /// Whether we have a stored sync token (i.e., a previous full sync completed).
-    var hasCompletedFullSync: Bool {
-        syncToken != nil
     }
 
     // MARK: - Event Cache
@@ -87,30 +59,8 @@ final class CalendarSyncStore {
         saveEvents(events)
     }
 
-    /// Applies incremental changes to the event cache.
-    /// - Cancelled events are removed by ID.
-    /// - Updated/new events replace existing ones by ID.
-    func applyIncrementalChanges(_ changedEvents: [GoogleCalendarEvent]) {
-        var eventsByID = Dictionary(
-            loadEvents().map { ($0.id, $0) },
-            uniquingKeysWith: { _, last in last }
-        )
-
-        for event in changedEvents {
-            if event.isCancelled {
-                eventsByID.removeValue(forKey: event.id)
-            } else {
-                eventsByID[event.id] = event
-            }
-        }
-
-        saveEvents(Array(eventsByID.values))
-    }
-
-    /// Wipes all cached data. Called before a full re-sync (e.g., after 410 Gone).
+    /// Wipes all cached data.
     func clearAll() {
-        syncToken = nil
-        clearAllSyncTokens()
         lastSyncDate = nil
         try? FileManager.default.removeItem(at: eventsFileURL)
         print("[CalendarSyncStore] Cleared all sync data")

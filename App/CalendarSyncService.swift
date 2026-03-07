@@ -1,7 +1,6 @@
 import Foundation
 
-/// Orchestrates Google Calendar sync: decides full vs. incremental,
-/// handles 410 Gone recovery, and coordinates auth -> API -> store.
+/// Orchestrates Google Calendar sync: coordinates auth -> API -> store.
 final class CalendarSyncService {
     static let shared = CalendarSyncService()
 
@@ -30,7 +29,7 @@ final class CalendarSyncService {
     /// Minimum interval between automatic syncs (5 minutes).
     private static let minSyncInterval: TimeInterval = 300
 
-    /// Performs a sync — incremental if a sync token exists, full otherwise.
+    /// Performs a full sync of all selected calendars.
     /// Safe to call from multiple sites (foreground, manual refresh, etc.);
     /// concurrent calls are coalesced. Skips if a sync completed recently
     /// (within `minSyncInterval`); use `forceFullSync()` or pass
@@ -64,11 +63,7 @@ final class CalendarSyncService {
 
         // Sync each calendar individually
         for calendarId in ids {
-            if let syncToken = store.syncToken(for: calendarId) {
-                try await performIncrementalSync(accessToken: accessToken, syncToken: syncToken, calendarId: calendarId)
-            } else {
-                try await performFullSync(accessToken: accessToken, calendarId: calendarId)
-            }
+            try await performFullSync(accessToken: accessToken, calendarId: calendarId)
         }
 
         // Remove events from calendars no longer selected
@@ -112,48 +107,16 @@ final class CalendarSyncService {
     private func performFullSync(accessToken: String, calendarId: String = "primary") async throws {
         print("[CalendarSync] Starting full sync for calendar: \(calendarId)...")
 
-        let result = try await api.fullSync(accessToken: accessToken, calendarId: calendarId)
+        let events = try await api.fetchEvents(accessToken: accessToken, calendarId: calendarId)
 
-        let localEvents = result.events.compactMap { $0.toLocalEvent(calendarId: calendarId) }
+        let localEvents = events.compactMap { $0.toLocalEvent(calendarId: calendarId) }
             .filter { !$0.isCancelled }
 
         // Merge with existing events from other calendars
         let existingEvents = store.loadEvents().filter { $0.calendarId != calendarId }
         store.replaceAllEvents(existingEvents + localEvents)
-        store.setSyncToken(result.syncToken, for: calendarId)
 
         print("[CalendarSync] Full sync complete for \(calendarId): \(localEvents.count) events")
-    }
-
-    private func performIncrementalSync(accessToken: String, syncToken: String, calendarId: String = "primary") async throws {
-        print("[CalendarSync] Starting incremental sync for calendar: \(calendarId)...")
-
-        do {
-            let result = try await api.incrementalSync(
-                accessToken: accessToken,
-                syncToken: syncToken,
-                calendarId: calendarId
-            )
-
-            let changedEvents = result.events.compactMap { $0.toLocalEvent(calendarId: calendarId) }
-
-            if !changedEvents.isEmpty {
-                store.applyIncrementalChanges(changedEvents)
-                print("[CalendarSync] Applied \(changedEvents.count) changes for \(calendarId)")
-            } else {
-                print("[CalendarSync] No changes since last sync for \(calendarId)")
-            }
-
-            store.setSyncToken(result.syncToken, for: calendarId)
-
-        } catch GoogleCalendarAPIError.syncTokenExpired {
-            // 410 Gone — token expired. Wipe this calendar's events and re-full-sync.
-            print("[CalendarSync] Sync token expired for \(calendarId). Re-running full sync...")
-            store.setSyncToken(nil, for: calendarId)
-            let existingEvents = store.loadEvents().filter { $0.calendarId != calendarId }
-            store.replaceAllEvents(existingEvents)
-            try await performFullSync(accessToken: accessToken, calendarId: calendarId)
-        }
     }
 }
 
