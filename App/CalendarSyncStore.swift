@@ -5,15 +5,20 @@ import Shared
 /// Uses AppGroupManager for storage so widget extensions could read synced events if needed.
 final class CalendarSyncStore {
 
-    private let defaults = AppGroupManager.userDefaults
+    private let defaults: UserDefaults
     private let syncTokenKey = "googleCalendar.syncToken"
     private let lastSyncKey = "googleCalendar.lastSyncDate"
 
-    private let eventsFileURL: URL = {
-        let dir = AppGroupManager.containerURL.appending(path: "GoogleCalendar")
-        try? FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
-        return dir.appending(path: "events.json")
-    }()
+    private let eventsFileURL: URL
+
+    init(
+        defaults: UserDefaults = AppGroupManager.userDefaults,
+        eventsDirectory: URL = AppGroupManager.containerURL.appending(path: "GoogleCalendar")
+    ) {
+        self.defaults = defaults
+        try? FileManager.default.createDirectory(at: eventsDirectory, withIntermediateDirectories: true)
+        self.eventsFileURL = eventsDirectory.appending(path: "events.json")
+    }
 
     private let encoder: JSONEncoder = {
         let e = JSONEncoder()

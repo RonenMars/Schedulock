@@ -5,14 +5,25 @@ import Foundation
 final class CalendarSyncService {
     static let shared = CalendarSyncService()
 
-    let store = CalendarSyncStore()
-    private let api = GoogleCalendarAPI()
-    private let auth = GoogleAuthService.shared
+    let store: CalendarSyncStore
+    private let api: GoogleCalendarAPI
+    private let auth: AccessTokenProvider
 
     /// Prevents concurrent syncs from racing.
     private var isSyncing = false
 
-    private init() {}
+    private init() {
+        self.store = CalendarSyncStore()
+        self.api = GoogleCalendarAPI()
+        self.auth = GoogleAuthService.shared
+    }
+
+    /// Internal init for dependency injection in tests.
+    init(store: CalendarSyncStore, api: GoogleCalendarAPI, auth: AccessTokenProvider) {
+        self.store = store
+        self.api = api
+        self.auth = auth
+    }
 
     // MARK: - Public
 

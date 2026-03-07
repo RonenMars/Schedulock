@@ -88,6 +88,17 @@ final class GoogleAuthService {
     }
 }
 
+// MARK: - AccessTokenProvider Protocol
+
+/// Minimal protocol for auth dependency injection in tests.
+/// Production code uses GoogleAuthService.shared; tests can substitute a fake.
+protocol AccessTokenProvider {
+    var isSignedIn: Bool { get }
+    func validAccessToken() async throws -> String
+}
+
+extension GoogleAuthService: AccessTokenProvider {}
+
 // MARK: - Errors
 
 enum GoogleAuthError: LocalizedError {
