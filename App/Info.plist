@@ -35,13 +35,13 @@
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
 	<key>GIDClientID</key>
-	<string>YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com</string>
+	<string>1066202581199-mkkdbpq1ekhbdqsm11vvqsjthebt0kib.apps.googleusercontent.com</string>
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>com.googleusercontent.apps.YOUR_GOOGLE_CLIENT_ID</string>
+				<string>com.googleusercontent.apps.1066202581199-mkkdbpq1ekhbdqsm11vvqsjthebt0kib</string>
 			</array>
 		</dict>
 	</array>
