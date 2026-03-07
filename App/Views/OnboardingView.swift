@@ -15,22 +15,38 @@ struct OnboardingView: View {
     @State private var viewModel = WallpaperViewModel()
     @State private var isGeneratingInitialWallpaper = false
     @State private var isLoadingImage = false
+    @State private var selectedCalendarSource: CalendarSourceType = .apple
+    @State private var googleCalendarVM = GoogleCalendarViewModel()
+    @State private var isSigningInWithGoogle = false
+    @State private var maxAllowedPage = 0
 
     let onComplete: () -> Void
 
     var body: some View {
         TabView(selection: $currentPage) {
             welcomeScreen.tag(0)
-            calendarPermissionScreen.tag(1)
-            photoPickerScreen.tag(2)
-            calendarSelectionScreen.tag(3)
-            templatePickerScreen.tag(4)
-            automationScreen.tag(5)
-            doneScreen.tag(6)
+            calendarSourceScreen.tag(1)
+            calendarPermissionScreen.tag(2)
+            photoPickerScreen.tag(3)
+            calendarSelectionScreen.tag(4)
+            templatePickerScreen.tag(5)
+            automationScreen.tag(6)
+            doneScreen.tag(7)
         }
         .tabViewStyle(.page(indexDisplayMode: .always))
         .indexViewStyle(.page(backgroundDisplayMode: .always))
         .background(DesignTokens.background.ignoresSafeArea())
+        .onChange(of: currentPage) { _, newPage in
+            // Allow backward swipes, prevent forward swipes past completed steps
+            if newPage > maxAllowedPage {
+                currentPage = maxAllowedPage
+                return
+            }
+            // Auto-skip calendar permission if already granted (Apple path)
+            if newPage == 2 && calendarAccessGranted {
+                advanceTo(3)
+            }
+        }
     }
 
     // MARK: - Screen 1: Welcome
@@ -56,9 +72,7 @@ struct OnboardingView: View {
             Spacer()
 
             Button {
-                withAnimation(.spring(response: 0.4, dampingFraction: 0.7)) {
-                    currentPage = 1
-                }
+                advanceTo(1)
             } label: {
                 Text("Get Started")
                     .font(.headline)
@@ -74,7 +88,103 @@ struct OnboardingView: View {
         .padding()
     }
 
-    // MARK: - Screen 2: Calendar Permission
+    // MARK: - Screen 2: Calendar Source
+
+    private var calendarSourceScreen: some View {
+        VStack(spacing: DesignTokens.spacingXL) {
+            Spacer()
+
+            Image(systemName: "calendar.badge.plus")
+                .font(.system(size: 60))
+                .foregroundStyle(DesignTokens.accentGradient)
+                .padding(.bottom, DesignTokens.spacingLG)
+
+            VStack(spacing: DesignTokens.spacingMD) {
+                Text("Choose Calendar")
+                    .font(.system(size: 28, weight: .bold))
+                    .foregroundColor(DesignTokens.textPrimary)
+
+                Text("Select which calendar to display on your wallpaper")
+                    .font(.system(size: 16))
+                    .foregroundColor(DesignTokens.textMuted)
+                    .multilineTextAlignment(.center)
+                    .padding(.horizontal)
+            }
+
+            Spacer()
+
+            VStack(spacing: DesignTokens.spacingMD) {
+                // Apple Calendar button
+                Button {
+                    selectedCalendarSource = .apple
+                    AppGroupManager.userDefaults.set(CalendarSourceType.apple.rawValue, forKey: "calendarSource")
+                    advanceTo(2)
+                } label: {
+                    HStack(spacing: DesignTokens.spacingSM) {
+                        Image(systemName: "apple.logo")
+                            .font(.system(size: 20))
+                        Text("Apple Calendar")
+                            .font(.headline)
+                    }
+                    .foregroundColor(.white)
+                    .frame(maxWidth: .infinity)
+                    .padding()
+                    .background(DesignTokens.accentGradient)
+                    .cornerRadius(DesignTokens.cardRadius)
+                }
+
+                // Google Calendar button
+                Button {
+                    isSigningInWithGoogle = true
+                    Task {
+                        await googleCalendarVM.signIn()
+                        isSigningInWithGoogle = false
+                        if googleCalendarVM.isSignedIn {
+                            selectedCalendarSource = .google
+                            AppGroupManager.userDefaults.set(CalendarSourceType.google.rawValue, forKey: "calendarSource")
+                            advanceTo(3)
+                        }
+                    }
+                } label: {
+                    Group {
+                        if isSigningInWithGoogle {
+                            ProgressView().tint(.white)
+                        } else {
+                            HStack(spacing: DesignTokens.spacingSM) {
+                                Image(systemName: "globe")
+                                    .font(.system(size: 20))
+                                Text("Google Calendar")
+                                    .font(.headline)
+                            }
+                        }
+                    }
+                    .foregroundColor(.white)
+                    .frame(maxWidth: .infinity)
+                    .padding()
+                    .background(
+                        LinearGradient(
+                            colors: [Color(red: 0.26, green: 0.52, blue: 0.96), Color(red: 0.20, green: 0.40, blue: 0.80)],
+                            startPoint: .leading, endPoint: .trailing
+                        )
+                    )
+                    .cornerRadius(DesignTokens.cardRadius)
+                }
+                .disabled(isSigningInWithGoogle)
+
+                if let error = googleCalendarVM.errorMessage {
+                    Text(error)
+                        .font(.caption)
+                        .foregroundColor(.red)
+                        .multilineTextAlignment(.center)
+                }
+            }
+            .padding(.horizontal, DesignTokens.spacingXL)
+            .padding(.bottom, 50)
+        }
+        .padding()
+    }
+
+    // MARK: - Screen 3: Calendar Permission
 
     private var calendarPermissionScreen: some View {
         VStack(spacing: DesignTokens.spacingXL) {
@@ -117,9 +227,7 @@ struct OnboardingView: View {
                                 availableCalendars = calendarProvider.fetchCalendars()
                                 enabledCalendarIDs = Set(availableCalendars.map { $0.calendarIdentifier })
                             }
-                            withAnimation(.spring(response: 0.4, dampingFraction: 0.7)) {
-                                currentPage = 2
-                            }
+                            advanceTo(3)
                         } catch {
                             print("Calendar access error: \(error)")
                         }
@@ -135,9 +243,7 @@ struct OnboardingView: View {
                 }
 
                 Button {
-                    withAnimation(.spring(response: 0.4, dampingFraction: 0.7)) {
-                        currentPage = 2
-                    }
+                    advanceTo(3)
                 } label: {
                     Text("Skip")
                         .font(.subheadline)
@@ -153,14 +259,11 @@ struct OnboardingView: View {
                 availableCalendars = calendarProvider.fetchCalendars()
                 enabledCalendarIDs = Set(availableCalendars.map { $0.calendarIdentifier })
                 calendarAccessGranted = true
-                withAnimation(.spring(response: 0.4, dampingFraction: 0.7)) {
-                    currentPage = 2
-                }
             }
         }
     }
 
-    // MARK: - Screen 3: Choose Photo
+    // MARK: - Screen 4: Choose Photo
 
     private var photoPickerScreen: some View {
         VStack(spacing: DesignTokens.spacingXL) {
@@ -217,9 +320,7 @@ struct OnboardingView: View {
                 if selectedImage != nil {
                     // Image selected: Continue as primary, Change Image as secondary
                     Button {
-                        withAnimation(.spring(response: 0.4, dampingFraction: 0.7)) {
-                            currentPage = 3
-                        }
+                        advanceTo(selectedCalendarSource == .google ? 5 : 4)
                     } label: {
                         Text("Continue")
                             .font(.headline)
@@ -254,9 +355,7 @@ struct OnboardingView: View {
                     }
 
                     Button {
-                        withAnimation(.spring(response: 0.4, dampingFraction: 0.7)) {
-                            currentPage = 3
-                        }
+                        advanceTo(selectedCalendarSource == .google ? 5 : 4)
                     } label: {
                         Text("Skip for gradient background")
                             .font(.subheadline)
@@ -281,7 +380,7 @@ struct OnboardingView: View {
         .padding()
     }
 
-    // MARK: - Screen 4: Pick Calendars
+    // MARK: - Screen 5: Pick Calendars
 
     private var calendarSelectionScreen: some View {
         VStack(spacing: DesignTokens.spacingXL) {
@@ -379,9 +478,7 @@ struct OnboardingView: View {
 
             Button {
                 saveCalendarSelections()
-                withAnimation(.spring(response: 0.4, dampingFraction: 0.7)) {
-                    currentPage = 4
-                }
+                advanceTo(5)
             } label: {
                 Text("Continue")
                     .font(.headline)
@@ -396,7 +493,7 @@ struct OnboardingView: View {
         }
     }
 
-    // MARK: - Screen 5: Choose Template
+    // MARK: - Screen 6: Choose Template
 
     private var templatePickerScreen: some View {
         VStack(spacing: DesignTokens.spacingXL) {
@@ -430,9 +527,7 @@ struct OnboardingView: View {
 
             Button {
                 saveTemplateSelection()
-                withAnimation(.spring(response: 0.4, dampingFraction: 0.7)) {
-                    currentPage = 5
-                }
+                advanceTo(6)
             } label: {
                 Text("Continue")
                     .font(.headline)
@@ -487,7 +582,7 @@ struct OnboardingView: View {
         }
     }
 
-    // MARK: - Screen 6: Automation Setup
+    // MARK: - Screen 7: Automation Setup
 
     private var automationScreen: some View {
         VStack(spacing: DesignTokens.spacingXL) {
@@ -542,9 +637,7 @@ struct OnboardingView: View {
                 }
 
                 Button {
-                    withAnimation(.spring(response: 0.4, dampingFraction: 0.7)) {
-                        currentPage = 6
-                    }
+                    advanceTo(7)
                 } label: {
                     Text("Skip for now")
                         .font(.subheadline)
@@ -557,7 +650,7 @@ struct OnboardingView: View {
         .padding()
     }
 
-    // MARK: - Screen 7: Done
+    // MARK: - Screen 8: Done
 
     private var doneScreen: some View {
         VStack(spacing: DesignTokens.spacingXL) {
@@ -616,6 +709,15 @@ struct OnboardingView: View {
         .padding()
     }
 
+    // MARK: - Navigation
+
+    private func advanceTo(_ page: Int) {
+        maxAllowedPage = max(maxAllowedPage, page)
+        withAnimation(.spring(response: 0.4, dampingFraction: 0.7)) {
+            currentPage = page
+        }
+    }
+
     // MARK: - Helper Methods
 
     private func saveSelectedImage(_ image: UIImage) {
@@ -638,9 +740,13 @@ struct OnboardingView: View {
         viewModel.backgroundImage = selectedImage
         viewModel.selectedTemplateType = selectedTemplateType
 
-        let enabledIDs = Array(enabledCalendarIDs)
         let events: [CalendarEvent]
-        if calendarAccessGranted {
+        if selectedCalendarSource == .google {
+            events = googleCalendarVM.todayEvents.isEmpty
+                ? WallpaperViewModel.sampleEvents
+                : Array(googleCalendarVM.todayEvents.prefix(6))
+        } else if calendarAccessGranted {
+            let enabledIDs = Array(enabledCalendarIDs)
             events = calendarProvider.fetchTodayEvents(
                 from: enabledIDs,
                 excludeDeclined: true,
