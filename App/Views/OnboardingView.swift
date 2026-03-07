@@ -13,12 +13,12 @@ struct OnboardingView: View {
     @State private var selectedTemplateType: TemplateType = .minimal
     @State private var calendarAccessGranted = false
     @State private var viewModel = WallpaperViewModel()
-    @State private var isGeneratingInitialWallpaper = false
     @State private var isLoadingImage = false
     @State private var selectedCalendarSource: CalendarSourceType = .apple
     @State private var googleCalendarVM = GoogleCalendarViewModel()
     @State private var isSigningInWithGoogle = false
     @State private var maxAllowedPage = 0
+    @State private var loadingStartTime: Date?
 
     let onComplete: () -> Void
 
@@ -31,7 +31,7 @@ struct OnboardingView: View {
             calendarSelectionScreen.tag(4)
             templatePickerScreen.tag(5)
             automationScreen.tag(6)
-            doneScreen.tag(7)
+            loadingPreviewScreen.tag(7)
         }
         .tabViewStyle(.page(indexDisplayMode: .always))
         .indexViewStyle(.page(backgroundDisplayMode: .always))
@@ -730,63 +730,44 @@ struct OnboardingView: View {
         .padding()
     }
 
-    // MARK: - Screen 8: Done
+    // MARK: - Screen 8: Loading & Preview
 
-    private var doneScreen: some View {
+    private var loadingPreviewScreen: some View {
         VStack(spacing: DesignTokens.spacingXL) {
             Spacer()
 
-            ZStack {
-                Circle()
-                    .fill(DesignTokens.success.opacity(0.2))
-                    .frame(width: 120, height: 120)
+            VStack(spacing: DesignTokens.spacingLG) {
+                ProgressView()
+                    .scaleEffect(1.5)
+                    .tint(DesignTokens.primary)
 
-                Image(systemName: "checkmark")
-                    .font(.system(size: 60, weight: .bold))
-                    .foregroundColor(DesignTokens.success)
-            }
-            .padding(.bottom, DesignTokens.spacingLG)
-
-            VStack(spacing: DesignTokens.spacingMD) {
-                Text("You're All Set!")
-                    .font(.system(size: 32, weight: .bold))
+                Text("Creating your wallpaper...")
+                    .font(.system(size: 18, weight: .medium))
                     .foregroundColor(DesignTokens.textPrimary)
 
-                Text("Ready to create your first beautiful wallpaper")
-                    .font(.system(size: 16))
+                Text("Loading calendar events and applying your style")
+                    .font(.system(size: 14))
                     .foregroundColor(DesignTokens.textMuted)
                     .multilineTextAlignment(.center)
                     .padding(.horizontal)
             }
 
             Spacer()
-
-            Button {
-                Task {
-                    isGeneratingInitialWallpaper = true
-                    await generateInitialWallpaper()
-                    completeOnboarding()
-                }
-            } label: {
-                Group {
-                    if isGeneratingInitialWallpaper {
-                        ProgressView().tint(.white)
-                    } else {
-                        Text("Generate First Wallpaper")
-                            .font(.headline)
-                            .foregroundColor(.white)
-                    }
-                }
-                .frame(maxWidth: .infinity)
-                .padding()
-                .background(DesignTokens.accentGradient)
-                .cornerRadius(DesignTokens.cardRadius)
-            }
-            .disabled(isGeneratingInitialWallpaper)
-            .padding(.horizontal, DesignTokens.spacingXL)
-            .padding(.bottom, 50)
         }
         .padding()
+        .task {
+            loadingStartTime = Date()
+            await generateInitialWallpaper()
+
+            // Ensure loading screen shows for at least 2 seconds
+            let elapsed = Date().timeIntervalSince(loadingStartTime ?? Date())
+            let remaining = 2.0 - elapsed
+            if remaining > 0 {
+                try? await Task.sleep(for: .seconds(remaining))
+            }
+
+            completeOnboarding()
+        }
     }
 
     // MARK: - Navigation
@@ -826,6 +807,11 @@ struct OnboardingView: View {
 
         let events: [CalendarEvent]
         if selectedCalendarSource == .google {
+            // Sync events from selected calendars before generating
+            let calendarIds = Array(googleCalendarVM.enabledGoogleCalendarIDs)
+            if !calendarIds.isEmpty {
+                await googleCalendarVM.performSync(ignoresFreshnessGuard: true)
+            }
             events = googleCalendarVM.todayEvents.isEmpty
                 ? WallpaperViewModel.sampleEvents
                 : Array(googleCalendarVM.todayEvents.prefix(6))
@@ -845,6 +831,8 @@ struct OnboardingView: View {
             events: events,
             resolution: .iPhone16Pro
         ) else { return }
+
+        viewModel.currentWallpaper = wallpaper
 
         let wallpaperURL = AppGroupManager.wallpaperDirectory.appending(path: "current.png")
         if let pngData = wallpaper.pngData() {
