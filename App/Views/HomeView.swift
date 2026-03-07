@@ -31,6 +31,9 @@ struct HomeView: View {
     @AppStorage("saveToPhotos", store: AppGroupManager.userDefaults)
     private var saveToPhotos: Bool = false
 
+    @AppStorage("calendarSource", store: AppGroupManager.userDefaults)
+    private var calendarSourceRaw: String = CalendarSourceType.apple.rawValue
+
     @Query private var allSavedSettings: [SavedTemplateSettings]
 
     var body: some View {
@@ -114,7 +117,9 @@ struct HomeView: View {
                     // Edit Agenda Style button
                     Button {
                         mediumHaptic()
-                        selectedTab = 1
+                        withAnimation(.easeInOut(duration: 0.3)) {
+                            selectedTab = 1
+                        }
                     } label: {
                         Text("Edit Agenda Style")
                             .font(.headline)
@@ -154,6 +159,9 @@ struct HomeView: View {
             .onAppear {
                 loadCurrentWallpaper()
                 startGlowAnimation()
+                Task {
+                    calendarProvider.resetAndRefresh()
+                }
             }
         }
     }
@@ -195,17 +203,24 @@ struct HomeView: View {
             // Yield to let SwiftUI render the loading state before blocking the main thread
             await Task.yield()
 
-            // 1. Fetch calendar events if access is granted, otherwise use samples
-            let enabledIDs = AppGroupManager.userDefaults.stringArray(forKey: "enabledCalendarIDs") ?? []
+            // 1. Fetch calendar events based on selected source
             let events: [CalendarEvent]
-            if CalendarDataProvider.authorizationStatus == .fullAccess {
-                events = calendarProvider.fetchTodayEvents(
-                    from: enabledIDs,
-                    excludeDeclined: !showDeclined,
-                    maxEvents: maxEvents
-                )
-            } else {
-                events = WallpaperViewModel.sampleEvents
+            let source = CalendarSourceType(rawValue: calendarSourceRaw) ?? .apple
+            switch source {
+            case .apple:
+                let enabledIDs = AppGroupManager.userDefaults.stringArray(forKey: "enabledCalendarIDs") ?? []
+                if CalendarDataProvider.authorizationStatus == .fullAccess {
+                    events = calendarProvider.fetchTodayEvents(
+                        from: enabledIDs,
+                        excludeDeclined: !showDeclined,
+                        maxEvents: maxEvents
+                    )
+                } else {
+                    events = WallpaperViewModel.sampleEvents
+                }
+            case .google:
+                let googleEvents = CalendarSyncService.shared.store.todayEvents(maxEvents: maxEvents)
+                events = googleEvents.isEmpty ? WallpaperViewModel.sampleEvents : googleEvents
             }
 
             // 2. Load background image from saved path

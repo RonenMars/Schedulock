@@ -57,6 +57,17 @@ struct CalendarPickerView: View {
                 .listRowBackground(DesignTokens.surface)
             }
 
+            if viewModel.hasThirdPartyCalendars {
+                Section {
+                } footer: {
+                    Label(
+                        "Events from third-party accounts (e.g. Google) are synced by Apple Calendar. Open the Calendar app to force a refresh.",
+                        systemImage: "info.circle"
+                    )
+                    .font(.caption)
+                }
+            }
+
             if !viewModel.todayEvents.isEmpty {
                 Section("Today's Events") {
                     ForEach(viewModel.todayEvents) { event in

@@ -6,6 +6,7 @@ import Shared
 @Observable
 final class CalendarViewModel {
     private let provider = CalendarDataProvider()
+    private var storeObserverTask: Task<Void, Never>?
 
     var authorizationStatus: EKAuthorizationStatus = CalendarDataProvider.authorizationStatus
     var calendarGroups: [(source: String, calendars: [EKCalendar])] = []
@@ -14,12 +15,9 @@ final class CalendarViewModel {
     var isLoading = false
 
     /// Calendar IDs that are enabled by the user, persisted in App Group.
-    var enabledCalendarIDs: Set<String> {
-        get {
-            Set(AppGroupManager.userDefaults.stringArray(forKey: "enabledCalendarIDs") ?? [])
-        }
-        set {
-            AppGroupManager.userDefaults.set(Array(newValue), forKey: "enabledCalendarIDs")
+    var enabledCalendarIDs: Set<String> = Set(AppGroupManager.userDefaults.stringArray(forKey: "enabledCalendarIDs") ?? []) {
+        didSet {
+            AppGroupManager.userDefaults.set(Array(enabledCalendarIDs), forKey: "enabledCalendarIDs")
             refreshEventCount()
         }
     }
@@ -46,6 +44,7 @@ final class CalendarViewModel {
 
     func loadCalendars() {
         isLoading = true
+        provider.resetAndRefresh()
         calendarGroups = provider.fetchCalendarsGroupedBySource()
 
         // If no calendars are enabled yet, enable all by default
@@ -56,9 +55,22 @@ final class CalendarViewModel {
 
         refreshEventCount()
         isLoading = false
+
+        // Observe EventKit changes to keep the count fresh
+        guard storeObserverTask == nil else { return }
+        storeObserverTask = Task { @MainActor [weak self] in
+            for await _ in NotificationCenter.default.notifications(named: .EKEventStoreChanged) {
+                self?.refreshEventCount()
+            }
+        }
+    }
+
+    deinit {
+        storeObserverTask?.cancel()
     }
 
     func refreshEventCount() {
+        provider.refreshSourcesIfNecessary()
         let ids = Array(enabledCalendarIDs)
         todayEventCount = provider.countTodayEvents(from: ids)
         todayEvents = provider.fetchTodayEvents(from: ids)
@@ -74,6 +86,14 @@ final class CalendarViewModel {
 
     func isCalendarEnabled(_ id: String) -> Bool {
         enabledCalendarIDs.contains(id)
+    }
+
+    /// True if any calendar source is a third-party CalDAV account (e.g. Google).
+    var hasThirdPartyCalendars: Bool {
+        calendarGroups.contains { group in
+            guard let source = group.calendars.first?.source else { return false }
+            return source.sourceType == .calDAV && !source.title.lowercased().contains("icloud")
+        }
     }
 
     // MARK: - Sync to SwiftData

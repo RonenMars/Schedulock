@@ -22,6 +22,21 @@ public class CalendarDataProvider {
         EKEventStore.authorizationStatus(for: .event)
     }
 
+    // MARK: - Refresh
+
+    /// Asks the system to refresh calendar sources if stale.
+    /// Does not guarantee a network sync but nudges the OS to check.
+    public func refreshSourcesIfNecessary() {
+        store.refreshSourcesIfNecessary()
+    }
+
+    /// Resets the event store, discarding all cached data, then refreshes sources.
+    /// Use for aggressive reload when entering calendar-related screens.
+    public func resetAndRefresh() {
+        store.reset()
+        store.refreshSourcesIfNecessary()
+    }
+
     // MARK: - Calendars
 
     /// Fetches all calendars for events, grouped by source (account).

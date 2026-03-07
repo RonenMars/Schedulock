@@ -75,12 +75,21 @@ final class BackgroundTaskManager {
         let templateTypeRaw = defaults.string(forKey: "defaultTemplateType") ?? "minimal"
         let templateType = TemplateType(rawValue: templateTypeRaw) ?? .minimal
 
-        // 2. Fetch events
-        let provider = CalendarDataProvider()
-        let calendarIDs = defaults.stringArray(forKey: "enabledCalendarIDs") ?? []
-        let events = provider.fetchTodayEvents(from: calendarIDs)
+        // 2. Fetch events based on calendar source
+        let events: [CalendarEvent]
+        let sourceRaw = defaults.string(forKey: "calendarSource") ?? CalendarSourceType.apple.rawValue
+        let source = CalendarSourceType(rawValue: sourceRaw) ?? .apple
 
-        print("📅 Fetched \(events.count) events from \(calendarIDs.count) calendars")
+        switch source {
+        case .apple:
+            let provider = CalendarDataProvider()
+            let calendarIDs = defaults.stringArray(forKey: "enabledCalendarIDs") ?? []
+            events = provider.fetchTodayEvents(from: calendarIDs)
+        case .google:
+            events = CalendarSyncService.shared.store.todayEvents()
+        }
+
+        print("📅 Fetched \(events.count) events via \(source.displayName)")
 
         // 3. Load background image (or nil for gradient fallback)
         let imagePath = AppGroupManager.imagesDirectory.appending(path: "background-processed.jpg")

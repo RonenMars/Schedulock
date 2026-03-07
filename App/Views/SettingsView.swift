@@ -33,7 +33,11 @@ struct SettingsView: View {
     @AppStorage("randomizeDaily", store: AppGroupManager.userDefaults)
     private var randomizeDaily: Bool = false
 
+    @AppStorage("calendarSource", store: AppGroupManager.userDefaults)
+    private var calendarSourceRaw: String = CalendarSourceType.apple.rawValue
+
     // MARK: - State Properties
+    @State private var googleCalendarVM = GoogleCalendarViewModel()
     @State private var showClearHistoryAlert = false
     @State private var showClearCacheAlert = false
     @State private var showResetDefaultsAlert = false
@@ -44,6 +48,13 @@ struct SettingsView: View {
         Binding(
             get: { DeviceResolution.all.first { $0.name == self.targetDeviceName } ?? DeviceResolution.iPhone16Pro },
             set: { self.targetDeviceName = $0.name }
+        )
+    }
+
+    private var calendarSourceBinding: Binding<CalendarSourceType> {
+        Binding(
+            get: { CalendarSourceType(rawValue: self.calendarSourceRaw) ?? .apple },
+            set: { self.calendarSourceRaw = $0.rawValue }
         )
     }
 
@@ -78,14 +89,88 @@ struct SettingsView: View {
                     }
                     .listRowBackground(DesignTokens.surface)
 
-                    // MARK: Calendar Section
-                    Section("Calendar") {
-                        NavigationLink {
-                            CalendarPickerView()
-                        } label: {
-                            Label("Select Calendars", systemImage: "calendar")
+                    // MARK: Calendar Source Section
+                    Section("Calendar Source") {
+                        Picker("Source", selection: calendarSourceBinding) {
+                            ForEach(CalendarSourceType.allCases) { source in
+                                Label(source.displayName, systemImage: source.iconName)
+                                    .tag(source)
+                            }
                         }
                         .foregroundStyle(DesignTokens.textPrimary)
+                    }
+                    .listRowBackground(DesignTokens.surface)
+
+                    // MARK: Calendar Settings Section
+                    Section("Calendar") {
+                        if CalendarSourceType(rawValue: calendarSourceRaw) == .google {
+                            // Google Calendar settings
+                            if googleCalendarVM.isSignedIn {
+                                HStack {
+                                    Label(googleCalendarVM.userEmail ?? "Signed In", systemImage: "person.crop.circle.fill")
+                                    Spacer()
+                                    if googleCalendarVM.isSyncing {
+                                        ProgressView()
+                                            .scaleEffect(0.8)
+                                    }
+                                }
+                                .foregroundStyle(DesignTokens.textPrimary)
+
+                                if let lastSync = googleCalendarVM.lastSyncDate {
+                                    HStack {
+                                        Text("Last Sync")
+                                        Spacer()
+                                        Text(lastSync, style: .relative)
+                                            .foregroundStyle(DesignTokens.textMuted)
+                                        Text("ago")
+                                            .foregroundStyle(DesignTokens.textMuted)
+                                    }
+                                    .foregroundStyle(DesignTokens.textPrimary)
+                                }
+
+                                Button {
+                                    Task { await googleCalendarVM.performSync(ignoresFreshnessGuard: true) }
+                                } label: {
+                                    Label("Sync Now", systemImage: "arrow.triangle.2.circlepath")
+                                }
+                                .foregroundStyle(DesignTokens.textPrimary)
+                                .disabled(googleCalendarVM.isSyncing)
+
+                                Button {
+                                    googleCalendarVM.signOut()
+                                } label: {
+                                    Label("Sign Out", systemImage: "rectangle.portrait.and.arrow.right")
+                                        .foregroundStyle(DesignTokens.danger)
+                                }
+                            } else {
+                                Button {
+                                    Task { await googleCalendarVM.signIn() }
+                                } label: {
+                                    Label("Sign in with Google", systemImage: "person.crop.circle.badge.plus")
+                                }
+                                .foregroundStyle(DesignTokens.textPrimary)
+                            }
+
+                            if let error = googleCalendarVM.errorMessage {
+                                Text(error)
+                                    .font(.caption)
+                                    .foregroundStyle(DesignTokens.danger)
+                            }
+                        } else {
+                            // Apple Calendar settings
+                            NavigationLink {
+                                CalendarPickerView()
+                            } label: {
+                                Label("Select Calendars", systemImage: "calendar")
+                            }
+                            .foregroundStyle(DesignTokens.textPrimary)
+
+                            Toggle("Show Declined Events", isOn: $showDeclined)
+                                .foregroundStyle(DesignTokens.textPrimary)
+
+                            Toggle("Show All-Day Events", isOn: $showAllDay)
+                                .foregroundStyle(DesignTokens.textPrimary)
+                        }
 
                         Stepper(
                             "Max Events: \(maxEvents)",
@@ -93,12 +178,6 @@ struct SettingsView: View {
                             in: 1...8
                         )
                         .foregroundStyle(DesignTokens.textPrimary)
-
-                        Toggle("Show Declined Events", isOn: $showDeclined)
-                            .foregroundStyle(DesignTokens.textPrimary)
-
-                        Toggle("Show All-Day Events", isOn: $showAllDay)
-                            .foregroundStyle(DesignTokens.textPrimary)
                     }
                     .listRowBackground(DesignTokens.surface)
 
@@ -191,7 +270,12 @@ struct SettingsView: View {
             }
             .navigationTitle("Settings")
             .toolbarColorScheme(.dark, for: .navigationBar)
-            .task { await syncPermissionStates() }
+            .task {
+                await syncPermissionStates()
+                if CalendarSourceType(rawValue: calendarSourceRaw) == .google {
+                    await googleCalendarVM.restoreAndLoad()
+                }
+            }
             .alert("Clear History", isPresented: $showClearHistoryAlert) {
                 Button("Cancel", role: .cancel) {}
                 Button("Clear", role: .destructive) {
