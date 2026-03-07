@@ -3,6 +3,12 @@
 DerivedData/
 *.xcuserstate
 
+# Tool config
+.serena/
+
+# Build artifacts
+Shared/.build/
+
 # Environment variables
 .envrc
 .env
